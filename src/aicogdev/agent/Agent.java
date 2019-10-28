@@ -1,4 +1,9 @@
-package aicogdev;
+package aicogdev.agent;
+
+import aicogdev.interaction.Action;
+import aicogdev.interaction.Decision;
+import aicogdev.interaction.Reaction;
+import aicogdev.interaction.Status;
 
 public abstract class Agent {
 	private Decision decision;

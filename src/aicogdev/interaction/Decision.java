@@ -1,4 +1,4 @@
-package aicogdev;
+package aicogdev.interaction;
 
 public class Decision {
 	public final Action actionChoisie;

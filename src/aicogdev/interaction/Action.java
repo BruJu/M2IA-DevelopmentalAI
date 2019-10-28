@@ -1,4 +1,4 @@
-package aicogdev;
+package aicogdev.interaction;
 
 import java.util.Objects;
 

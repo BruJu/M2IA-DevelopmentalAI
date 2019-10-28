@@ -1,4 +1,4 @@
-package aicogdev;
+package aicogdev.interaction;
 
 public enum Status {
 	surprised,

@@ -1,7 +1,7 @@
 package aicogdev.environnement;
 
-import aicogdev.Action;
-import aicogdev.Reaction;
+import aicogdev.interaction.Action;
+import aicogdev.interaction.Reaction;
 
 public class Environnement2 implements Environnement {
 	@Override
