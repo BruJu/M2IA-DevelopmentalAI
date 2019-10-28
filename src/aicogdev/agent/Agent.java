@@ -3,7 +3,7 @@ package aicogdev.agent;
 import aicogdev.interaction.Action;
 import aicogdev.interaction.Decision;
 import aicogdev.interaction.Reaction;
-import aicogdev.interaction.Status;
+import aicogdev.interaction.ResultatInteraction;
 
 public abstract class Agent {
 	private Decision decision;
@@ -13,25 +13,16 @@ public abstract class Agent {
 		return decision.actionChoisie;
 	}
 
-	protected abstract Decision getDecision();
+    public void setReaction(Reaction reaction) {
+        ResultatInteraction resultat = processReaction(decision.actionChoisie, decision.reactionAttendue, reaction);
 
-	public Status getFeedback(Reaction reaction) {
-		if (decision.reactionAttendue == null) {
-			return Status.surprised;
-		} else {
-			return decision.reactionAttendue.equals(reaction) ? Status.happy : Status.surprised;
-		}
-	}
+        System.out.println(decision.actionChoisie + " ; "
+                + decision.reactionAttendue + " ; "
+                + resultat.toString());
+    }
 
-	public void setReaction(Reaction reaction) {
-		Status isHappy = getFeedback(reaction);
+    protected abstract Decision getDecision();
 
-		isHappy = processReaction(decision, reaction, isHappy);
-
-		System.out.println(decision.actionChoisie + " ; "
-				+ decision.reactionAttendue + " ; "
-				+ reaction + " ; " + isHappy);
-	}
-
-	protected abstract Status processReaction(Decision decision, Reaction reaction, Status status);
+	protected abstract ResultatInteraction processReaction(Action actionFaite, Reaction reactionAttendue,
+                                                           Reaction reactionRecue);
 }

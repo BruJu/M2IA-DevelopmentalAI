@@ -3,7 +3,7 @@ package aicogdev.agent;
 import aicogdev.interaction.Action;
 import aicogdev.interaction.Decision;
 import aicogdev.interaction.Reaction;
-import aicogdev.interaction.Status;
+import aicogdev.interaction.ResultatInteraction;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,25 +22,29 @@ public class AgentUnique extends Agent {
 	}
 
 	@Override
-	protected Status processReaction(Decision decision, Reaction reaction, Status status) {
-		if (Objects.equals(decision.reactionAttendue, reaction)) {
+	protected ResultatInteraction processReaction(Action actionFaite, Reaction reactionAttendue, Reaction reactionRecue) {
+		if (Objects.equals(reactionAttendue, reactionRecue)) {
 			numberOfTimesRight++;
 
+			boolean isBored = false;
+
 			if (numberOfTimesRight == 3) {
+				isBored = true;
+
 				if (actionWanted.numero == 1)
 					actionWanted = new Action(2);
 				else
 					actionWanted = new Action(1);
 
 				numberOfTimesRight = 0;
-				return Status.bored;
 			}
 
+			return new ResultatInteraction(true, 0, isBored);
 		} else {
-			expectations.put(decision.actionChoisie, reaction);
+			expectations.put(actionFaite, reactionRecue);
 			numberOfTimesRight = 0;
-		}
 
-		return status;
+			return new ResultatInteraction(false, 0, false);
+		}
 	}
 }
