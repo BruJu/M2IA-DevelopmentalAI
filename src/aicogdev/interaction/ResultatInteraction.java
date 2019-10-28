@@ -10,4 +10,10 @@ public class ResultatInteraction {
         this.rightPrediction = rightPrediction;
         this.isBored = isBored;
     }
+
+
+    @Override
+    public String toString() {
+        return "" + rightPrediction + " ; " + recompense + " ; " + !isBored;
+    }
 }
