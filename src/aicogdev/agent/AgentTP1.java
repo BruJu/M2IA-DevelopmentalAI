@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class AgentUnique extends Agent {
+public class AgentTP1 extends Agent {
 	private Map<Action, Reaction> expectations = new HashMap<>();
 
 	private Action actionWanted = new Action(1);
