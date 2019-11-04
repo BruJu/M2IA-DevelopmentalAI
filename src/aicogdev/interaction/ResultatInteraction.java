@@ -6,8 +6,8 @@ public class ResultatInteraction {
     public final boolean isBored;
 
     public ResultatInteraction(boolean rightPrediction, int recompense, boolean isBored) {
-        this.recompense = recompense;
         this.rightPrediction = rightPrediction;
+        this.recompense = recompense;
         this.isBored = isBored;
     }
 

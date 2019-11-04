@@ -1,8 +1,6 @@
 package aicogdev.agent;
 
-import aicogdev.interaction.Action;
 import aicogdev.interaction.Decision;
-import aicogdev.interaction.Reaction;
 import aicogdev.interaction.ResultatInteraction;
 
 import java.util.HashMap;
@@ -10,19 +8,19 @@ import java.util.Map;
 import java.util.Objects;
 
 public class AgentTP1 extends Agent {
-	private Map<Action, Reaction> expectations = new HashMap<>();
+	private Map<Integer, Integer> expectations = new HashMap<>();
 
-	private Action actionWanted = new Action(1);
+	private int actionWanted = 1;
 
 	private int numberOfTimesRight = 0;
 
 	@Override
 	protected Decision getDecision() {
-		return new Decision(actionWanted, expectations.get(actionWanted));
+		return new Decision(actionWanted, expectations.getOrDefault(actionWanted, 0));
 	}
 
 	@Override
-	protected ResultatInteraction processReaction(Action actionFaite, Reaction reactionAttendue, Reaction reactionRecue) {
+	protected ResultatInteraction processReaction(int actionFaite, int reactionAttendue, int reactionRecue) {
 		if (Objects.equals(reactionAttendue, reactionRecue)) {
 			numberOfTimesRight++;
 
@@ -31,10 +29,10 @@ public class AgentTP1 extends Agent {
 			if (numberOfTimesRight == 3) {
 				isBored = true;
 
-				if (actionWanted.numero == 1)
-					actionWanted = new Action(2);
+				if (actionWanted == 1)
+					actionWanted = 2;
 				else
-					actionWanted = new Action(1);
+					actionWanted = 1;
 
 				numberOfTimesRight = 0;
 			}

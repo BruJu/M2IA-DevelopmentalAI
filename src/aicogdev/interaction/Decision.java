@@ -1,10 +1,10 @@
 package aicogdev.interaction;
 
 public class Decision {
-	public final Action actionChoisie;
-	public final Reaction reactionAttendue;
+	public final int actionChoisie;
+	public final int reactionAttendue;
 
-	public Decision(Action actionChoisie, Reaction reactionAttendue) {
+	public Decision(int actionChoisie, int reactionAttendue) {
 		this.actionChoisie = actionChoisie;
 		this.reactionAttendue = reactionAttendue;
 	}

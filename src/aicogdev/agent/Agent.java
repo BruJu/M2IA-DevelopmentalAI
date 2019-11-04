@@ -1,19 +1,17 @@
 package aicogdev.agent;
 
-import aicogdev.interaction.Action;
 import aicogdev.interaction.Decision;
-import aicogdev.interaction.Reaction;
 import aicogdev.interaction.ResultatInteraction;
 
 public abstract class Agent {
 	private Decision decision;
 
-	public Action getAction() {
+	public int getAction() {
 		decision = getDecision();
 		return decision.actionChoisie;
 	}
 
-    public void setReaction(Reaction reaction) {
+    public void recevoirReaction(int reaction) {
         ResultatInteraction resultat = processReaction(decision.actionChoisie, decision.reactionAttendue, reaction);
 
         System.out.println(decision.actionChoisie + " ; "
@@ -23,6 +21,7 @@ public abstract class Agent {
 
     protected abstract Decision getDecision();
 
-	protected abstract ResultatInteraction processReaction(Action actionFaite, Reaction reactionAttendue,
-                                                           Reaction reactionRecue);
+	protected abstract ResultatInteraction processReaction(int actionFaite, int reactionAttendue, int reactionRecue);
+
+	protected void printLog() { }
 }

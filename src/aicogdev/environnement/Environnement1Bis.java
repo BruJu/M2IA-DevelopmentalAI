@@ -1,11 +1,12 @@
 package aicogdev.environnement;
 
-import aicogdev.interaction.Action;
-import aicogdev.interaction.Reaction;
-
 public class Environnement1Bis implements Environnement {
 	@Override
-	public Reaction agir(Action action) {
-		return new Reaction(action.numero == 2 ? 1 : 2);
+	public int agir(int action) {
+		switch (action) {
+			case 1: return 2;
+			case 2: return 1;
+			default : throw new IllegalAction();
+		}
 	}
 }

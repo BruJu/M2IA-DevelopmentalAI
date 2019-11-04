@@ -1,8 +1,6 @@
 package aicogdev.agent;
 
-import aicogdev.interaction.Action;
 import aicogdev.interaction.Decision;
-import aicogdev.interaction.Reaction;
 import aicogdev.interaction.ResultatInteraction;
 
 import java.util.HashMap;
@@ -10,31 +8,28 @@ import java.util.Map;
 import java.util.Objects;
 
 public class AgentTP2 extends Agent {
-    private Feedback feedback;
+    private Feedback feedback = new Feedback(new int[]{
+            1, 1,
+            1, -1,
+            -1, 1
+    });
 
-    private Map<Action, Reaction> attentes = new HashMap<>();
+    private Map<Integer, Integer> attentes = new HashMap<>();
 
-    private Action actionActuellementExploree = new Action(1);
+    private int actionActuellementExploree = 1;
     private int numberOfTimesRight;
 
     public AgentTP2() {
-        feedback = new Feedback();
-        feedback.register(1,1, 1)
-                .register(1,2,1)
-                .register(2,1,1)
-                .register(2,2,-1)
-                .register(3,1,-1)
-                .register(3,2,1);
     }
 
 
     @Override
     protected Decision getDecision() {
-        return new Decision(actionActuellementExploree, attentes.get(actionActuellementExploree));
+        return new Decision(actionActuellementExploree, attentes.getOrDefault(actionActuellementExploree, 0));
     }
 
     @Override
-    protected ResultatInteraction processReaction(Action actionFaite, Reaction reactionAttendue, Reaction reactionRecue) {
+    protected ResultatInteraction processReaction(int actionFaite, int reactionAttendue, int reactionRecue) {
         int recompense = feedback.getValue(actionFaite, reactionRecue);
 
         if (Objects.equals(reactionAttendue, reactionRecue)) {
@@ -59,11 +54,11 @@ public class AgentTP2 extends Agent {
         }
     }
 
-    private Action changerDAction() {
+    private int changerDAction() {
         // Exploration
         for (int i = 1 ; i <= 3 ; i++) {
-            if (!attentes.containsKey(new Action(i))) {
-                return new Action(i);
+            if (!attentes.containsKey(i)) {
+                return i;
             }
         }
 
@@ -72,7 +67,7 @@ public class AgentTP2 extends Agent {
         int bestValue = Integer.MIN_VALUE;
 
         for (int i = 1 ; i <= 3 ; i++) {
-            if (i == actionActuellementExploree.numero) {
+            if (i == actionActuellementExploree) {
                 continue;
             }
 
@@ -85,11 +80,11 @@ public class AgentTP2 extends Agent {
             }
         }
 
-        return new Action(bestAction);
+        return bestAction;
     }
 
     private int evaluerValeurAttendue(int i) {
-        return feedback.getValue(new Action(i), attentes.get(new Action(i)));
+        return feedback.getValue(i, attentes.get(i));
     }
 
 }
