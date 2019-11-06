@@ -1,7 +1,6 @@
 package aicogdev.agent;
 
 import aicogdev.interaction.Decision;
-import aicogdev.interaction.ResultatInteraction;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +28,7 @@ public class AgentTP2 extends Agent {
     }
 
     @Override
-    protected ResultatInteraction processReaction(int actionFaite, int reactionAttendue, int reactionRecue) {
+    protected String processReaction(int actionFaite, int reactionAttendue, int reactionRecue) {
         int recompense = feedback.getValue(actionFaite, reactionRecue);
 
         if (Objects.equals(reactionAttendue, reactionRecue)) {
@@ -45,12 +44,13 @@ public class AgentTP2 extends Agent {
                 numberOfTimesRight = 0;
             }
 
-            return new ResultatInteraction(true, recompense, isBored);
+			return (isBored ? "Ennuyé" : "Content") + " ; " + recompense;
         } else {
             attentes.put(actionFaite, reactionRecue);
             numberOfTimesRight = 0;
 
-            return new ResultatInteraction(false, recompense, false);
+
+			return "Surpris ; " + recompense;
         }
     }
 
@@ -72,7 +72,6 @@ public class AgentTP2 extends Agent {
             }
 
             int valuation = evaluerValeurAttendue(i);
-            System.out.println("===");
 
             if (bestAction == 0 || bestValue < valuation) {
                 bestAction = i;

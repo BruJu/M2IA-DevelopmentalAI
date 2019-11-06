@@ -1,7 +1,6 @@
 package aicogdev.agent;
 
 import aicogdev.interaction.Decision;
-import aicogdev.interaction.ResultatInteraction;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +19,7 @@ public class AgentTP1 extends Agent {
 	}
 
 	@Override
-	protected ResultatInteraction processReaction(int actionFaite, int reactionAttendue, int reactionRecue) {
+	protected String processReaction(int actionFaite, int reactionAttendue, int reactionRecue) {
 		if (Objects.equals(reactionAttendue, reactionRecue)) {
 			numberOfTimesRight++;
 
@@ -37,12 +36,12 @@ public class AgentTP1 extends Agent {
 				numberOfTimesRight = 0;
 			}
 
-			return new ResultatInteraction(true, 0, isBored);
+			return isBored ? "Ennuyé" : "Content";
 		} else {
 			expectations.put(actionFaite, reactionRecue);
 			numberOfTimesRight = 0;
 
-			return new ResultatInteraction(false, 0, false);
+			return "Surpris";
 		}
 	}
 }

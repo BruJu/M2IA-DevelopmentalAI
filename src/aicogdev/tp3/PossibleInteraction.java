@@ -14,7 +14,30 @@ public class PossibleInteraction {
         possibleReactions.put(2, new ReactionValeur(feedback.getValue(action, 2)));
     }
 
-    public static class ReactionValeur {
+	public String stringifyValences(int reactionAttendue, int reactionRecue) {
+    	String choixUn = possibleReactions.get(1).toString(1);
+    	String choixDeux = possibleReactions.get(2).toString(2);
+
+		if (reactionRecue == 2) {
+			choixDeux = "==>" + choixDeux;
+			choixUn =   "   " + choixUn;
+		} else {
+			choixUn =   "==>" + choixUn;
+			choixDeux = "   " + choixDeux;
+		}
+
+		if (reactionAttendue == 2) {
+			choixDeux = choixDeux + "==>";
+			choixUn = choixUn     + "   ";
+		} else {
+			choixUn = choixUn     + "==>";
+			choixDeux = choixDeux + "   ";
+		}
+
+		return choixUn + " " + choixDeux;
+	}
+
+	public static class ReactionValeur {
         public final int valeur;
         public int poids;
 
@@ -26,6 +49,11 @@ public class PossibleInteraction {
         public int getValance() {
             return valeur * poids;
         }
+
+
+        public String toString(int prefixe) {
+        	return "" + prefixe + "->" + valeur + "*" + poids + "=" + (valeur * poids);
+		}
     }
 
     public final int action;

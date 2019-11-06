@@ -4,7 +4,6 @@ import aicogdev.agent.Agent;
 import aicogdev.agent.Feedback;
 import aicogdev.interaction.Decision;
 import aicogdev.interaction.Interaction;
-import aicogdev.interaction.ResultatInteraction;
 
 import java.util.*;
 
@@ -63,7 +62,7 @@ public class AgentTP3 extends Agent {
     }
 
     @Override
-    protected ResultatInteraction processReaction(int actionFaite, int reactionAttendue, int reactionRecue) {
+    protected String processReaction(int actionFaite, int reactionAttendue, int reactionRecue) {
         Interaction obtenue = new Interaction(actionFaite, reactionRecue);
 
         int feedback = this.feedback.getValue(actionFaite, reactionRecue);
@@ -73,8 +72,13 @@ public class AgentTP3 extends Agent {
             this.learnedInteractions.add(learnedSequence);
         }
 
-        derniereInteraction = obtenue;
+        String patternAppris = derniereInteraction == null ? "N/A"
+				: "[" + derniereInteraction.toString() + ", " + obtenue.toString() + "]";
 
-        return new ResultatInteraction(reactionAttendue == reactionRecue, feedback, false);
+		derniereInteraction = obtenue;
+
+        return (reactionAttendue == reactionRecue ? "Content" : "Surpris")
+				+ " ; " + feedback
+				+ " ; " + patternAppris;
     }
 }

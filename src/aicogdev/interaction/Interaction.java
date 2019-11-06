@@ -24,4 +24,9 @@ public class Interaction {
     public int hashCode() {
         return Objects.hash(action, reaction);
     }
+
+    @Override
+    public String toString() {
+    	return ("I" + action) + reaction;
+	}
 }

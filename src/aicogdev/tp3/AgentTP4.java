@@ -4,7 +4,6 @@ import aicogdev.agent.Agent;
 import aicogdev.agent.Feedback;
 import aicogdev.interaction.Decision;
 import aicogdev.interaction.Interaction;
-import aicogdev.interaction.ResultatInteraction;
 
 public class AgentTP4 extends Agent {
 
@@ -27,17 +26,26 @@ public class AgentTP4 extends Agent {
     }
 
     @Override
-    protected ResultatInteraction processReaction(int actionFaite, int reactionAttendue, int reactionRecue) {
+    protected String processReaction(int actionFaite, int reactionAttendue, int reactionRecue) {
 
-        if (interactionPrecedente != null)
-            interactionsManager.registerSequence(interactionPrecedente, new Interaction(actionFaite, reactionRecue));
 
-        interactionPrecedente = new Interaction(actionFaite, reactionRecue);
+		Interaction obtenue = new Interaction(actionFaite, reactionRecue);
 
-        return new ResultatInteraction(reactionAttendue == reactionRecue,
+		String patternAppris = interactionPrecedente == null ? "N/A ; N/A"
+				: "[" + interactionPrecedente.toString() + ", " + obtenue.toString() + "]";
 
-                feedback.getValue(actionFaite, reactionRecue),
-                false
-                );
+		if (interactionPrecedente != null) {
+			patternAppris += " ; " + interactionsManager.stringifyValences(interactionPrecedente, actionFaite, reactionAttendue, reactionRecue);
+		}
+
+		if (interactionPrecedente != null)
+			interactionsManager.registerSequence(interactionPrecedente, new Interaction(actionFaite, reactionRecue));
+
+		interactionPrecedente = obtenue;
+
+		int feedback = this.feedback.getValue(actionFaite, reactionRecue);
+		return (reactionAttendue == reactionRecue ? "Content" : "Surpris")
+				+ " ; " + feedback
+				+ " ; " + patternAppris;
     }
 }

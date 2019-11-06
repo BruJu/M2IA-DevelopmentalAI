@@ -56,4 +56,14 @@ public class PossibleInteractions {
 
         return list;
     }
+
+	public String stringifyValences(Interaction premiere, int actionFaite, int reactionAttendue, int reactionRecue) {
+		if (!interactions.containsKey(premiere)) {
+			return "N/A";
+		}
+
+		PossibleInteraction ps = interactions.get(premiere).get(actionFaite);
+
+		return ps.stringifyValences(reactionAttendue, reactionRecue);
+	}
 }
