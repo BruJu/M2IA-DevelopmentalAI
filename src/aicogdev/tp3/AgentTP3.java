@@ -2,7 +2,6 @@ package aicogdev.tp3;
 
 import aicogdev.agent.Agent;
 import aicogdev.agent.Feedback;
-import aicogdev.interaction.Decision;
 import aicogdev.interaction.Interaction;
 
 import java.util.*;
@@ -17,12 +16,12 @@ public class AgentTP3 extends Agent {
 
 
     @Override
-    protected Decision getDecision() {
+    protected Interaction getDecision() {
         if (derniereInteraction == null) {
-            return new Decision(1, 0);
+            return new Interaction(1, 0);
         } else {
             Interaction i = trouverInteractionSuivante();
-            return new Decision(i.action, i.reaction);
+            return new Interaction(i.action, i.reaction);
         }
     }
 

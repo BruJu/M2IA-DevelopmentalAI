@@ -1,6 +1,6 @@
 package aicogdev.agent;
 
-import aicogdev.interaction.Decision;
+import aicogdev.interaction.Interaction;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,8 +14,8 @@ public class AgentTP1 extends Agent {
 	private int numberOfTimesRight = 0;
 
 	@Override
-	protected Decision getDecision() {
-		return new Decision(actionWanted, expectations.getOrDefault(actionWanted, 0));
+	protected Interaction getDecision() {
+		return new Interaction(actionWanted, expectations.getOrDefault(actionWanted, 0));
 	}
 
 	@Override

@@ -2,7 +2,6 @@ package aicogdev.tp3;
 
 import aicogdev.agent.Agent;
 import aicogdev.agent.Feedback;
-import aicogdev.interaction.Decision;
 import aicogdev.interaction.Interaction;
 
 public class AgentTP4 extends Agent {
@@ -19,10 +18,10 @@ public class AgentTP4 extends Agent {
     }
 
     @Override
-    protected Decision getDecision() {
+    protected Interaction getDecision() {
         Interaction suivante = interactionsManager.deciderAction(interactionPrecedente);
 
-        return new Decision(suivante.action, suivante.reaction);
+        return new Interaction(suivante.action, suivante.reaction);
     }
 
     @Override
