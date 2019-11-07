@@ -15,6 +15,7 @@ public abstract class Agent {
 
         System.out.println(interactionAttendue.action + " ; "
                 + interactionAttendue.reaction + " ; "
+				+ reaction + " ; "
                 + resultat);
     }
 

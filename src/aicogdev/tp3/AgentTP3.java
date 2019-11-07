@@ -3,13 +3,21 @@ package aicogdev.tp3;
 import aicogdev.agent.Agent;
 import aicogdev.agent.Feedback;
 import aicogdev.interaction.Interaction;
+import fr.bruju.util.Pair;
 
+import javax.sound.midi.Sequence;
 import java.util.*;
 
 public class AgentTP3 extends Agent {
     private Feedback feedback = new Feedback(new int[] { -1, 1, -1, 1 });
 
-    private Set<Sequence> learnedInteractions = new HashSet<>();
+	/**
+	 * Associate a previous interaction and a following action with the expected reaction
+	 * ie
+	 * <code>Map<Interaction(A, B), C> = D</code>
+	 * I did A, i got feedback B. If i do C, i'll get D
+	 */
+	private Map<Pair<Interaction, Integer>, Integer> learnedInteractions = new HashMap<>();
 
     private Interaction derniereInteraction = null;
 
@@ -26,29 +34,35 @@ public class AgentTP3 extends Agent {
     }
 
     private Interaction trouverInteractionSuivante() {
-        List<Sequence> avoid = new ArrayList<>();
-        List<Sequence> exploit = new ArrayList<>();
+        List<Pair<Interaction, Integer>> avoid = new ArrayList<>();
+		List<Pair<Interaction, Integer>> exploit = new ArrayList<>();
 
-        for (Sequence s : learnedInteractions) {
-            if (s.premiere.equals(derniereInteraction)) {
-                int expectedFeedback = feedback.getValue(s.seconde);
+        // Find the interactions that we think are possible at this point
+        learnedInteractions
+				.entrySet()
+				.stream()
+				// Keep relevant first interaction
+				.filter(entry -> entry.getKey().getLeft().equals(derniereInteraction))
+				// Keep the following action - reactions
+				.map(entry -> new Interaction(entry.getKey().getRight(), entry.getValue()))
+				// Add the relevant interactions
+				.forEach(expectedInteraction -> {
+					int expectedFeedback = feedback.getValue(expectedInteraction);
 
-                if (expectedFeedback < 0) {
-                    avoid.add(s);
-                } else {
-                    exploit.add(s);
-                }
-            }
-        }
+					if (expectedFeedback < 0) {
+						avoid.add(new Pair<>(expectedInteraction, expectedFeedback));
+					} else {
+						exploit.add(new Pair<>(expectedInteraction, expectedFeedback));
+					}
+				});
+
 
         if (exploit.isEmpty()) {
             Set<Integer> choices = new TreeSet<>();
             choices.add(1);
             choices.add(2);
 
-            for (Sequence toAvoid : avoid) {
-                choices.remove(toAvoid.seconde.action);
-            }
+            avoid.forEach(p -> choices.remove(p.getLeft().action));
 
             for (Integer i : choices) {
                 return new Interaction(i, 0);
@@ -56,7 +70,7 @@ public class AgentTP3 extends Agent {
 
             return new Interaction(1, 0);
         } else {
-            return new Interaction(exploit.get(0).seconde.action, exploit.get(0).seconde.reaction);
+        	return exploit.stream().max((i1, i2) -> -Integer.compare(i1.getRight(), i2.getRight())).get().getLeft();
         }
     }
 
@@ -66,13 +80,31 @@ public class AgentTP3 extends Agent {
 
         int feedback = this.feedback.getValue(actionFaite, reactionRecue);
 
-        if (derniereInteraction != null) {
-            Sequence learnedSequence = new Sequence(derniereInteraction, obtenue);
-            this.learnedInteractions.add(learnedSequence);
-        }
 
-        String patternAppris = derniereInteraction == null ? "N/A"
-				: "[" + derniereInteraction.toString() + ", " + obtenue.toString() + "]";
+		String patternAppris = "N/A";
+
+
+        if (derniereInteraction != null) {
+			Pair<Interaction, Integer> beginSequence = new Pair<>(derniereInteraction, actionFaite);
+
+			boolean learnedSomething = true;
+
+			if (learnedInteractions.containsKey(beginSequence)) {
+				if (!learnedInteractions.get(beginSequence).equals(reactionAttendue)) {
+					System.out.println("La séquence enregistrée était fausse");
+				} else {
+					learnedSomething = false;
+				}
+			}
+
+			if (learnedSomething) {
+				learnedInteractions.put(beginSequence, reactionRecue);
+				patternAppris = "[" + beginSequence.getLeft()
+						+ ", " + new Interaction(beginSequence.getRight(), reactionRecue) + "]";
+			} else {
+				patternAppris = "";
+			}
+        }
 
 		derniereInteraction = obtenue;
 
