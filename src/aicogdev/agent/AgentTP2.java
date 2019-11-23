@@ -6,58 +6,58 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * An agent that learns pairs of action - feedback.
+ */
 public class AgentTP2 extends Agent {
-    private ValuationSystem valuationSystem = new ValuationSystem(new int[]{
-            1, 1,
-            1, -1,
-            -1, 1
-    });
+    /** Maps action to feedback */
+    private Map<Integer, Integer> expectations = new HashMap<>();
 
-    private Map<Integer, Integer> attentes = new HashMap<>();
+    /** Currently explored action */
+    private int exploredAction = 1;
 
-    private int actionActuellementExploree = 1;
-    private int numberOfTimesRight;
+    /** Number of times the agent correctly predicted the action */
+    private int numberOfTimesRight = 0;
 
-    public AgentTP2() {
-    }
+    /** Number of times the agent have to be right to be bored and explore a new action */
+    private static final int NUMBER_OF_TIMES_FOR_BORED = 3;
 
+    private ValuationSystem valuationSystem = new ValuationSystem(1, -1, 1, -1, -1, 1);
 
     @Override
     protected Interaction getDecision() {
-        return new Interaction(actionActuellementExploree, attentes.getOrDefault(actionActuellementExploree, 0));
+        return new Interaction(exploredAction, expectations.getOrDefault(exploredAction, 0));
     }
 
     @Override
     protected String[] processReaction(int action, int expectedFeedback, int actualFeedback) {
-        int recompense = valuationSystem.getValue(action, actualFeedback);
+        int value = valuationSystem.getValue(action, actualFeedback);
+        String valueString = Integer.toString(value);
 
         if (Objects.equals(expectedFeedback, actualFeedback)) {
             numberOfTimesRight++;
 
-            boolean isBored = false;
-
-            if (numberOfTimesRight == 3) {
-                isBored = true;
-
-                actionActuellementExploree = changerDAction();
-
+            if (numberOfTimesRight != NUMBER_OF_TIMES_FOR_BORED) {
+                return new String[]{ "Happy", valueString };
+            } else {
+                // Change current action
+                exploredAction = decideNewAction();
                 numberOfTimesRight = 0;
-            }
 
-			return new String[] { (isBored ? "Ennuyé" : "Content") + " ; " + recompense };
+                return new String[]{ "Bored", valueString };
+            }
         } else {
-            attentes.put(action, actualFeedback);
+            expectations.put(action, actualFeedback);
             numberOfTimesRight = 0;
 
-
-			return new String[] { "Surpris ; " + recompense};
+            return new String[]{ "Surprised", valueString };
         }
     }
 
-    private int changerDAction() {
+    private int decideNewAction() {
         // Exploration
         for (int i = 1 ; i <= 3 ; i++) {
-            if (!attentes.containsKey(i)) {
+            if (!expectations.containsKey(i)) {
                 return i;
             }
         }
@@ -66,24 +66,19 @@ public class AgentTP2 extends Agent {
         int bestAction = 0;
         int bestValue = Integer.MIN_VALUE;
 
-        for (int i = 1 ; i <= 3 ; i++) {
-            if (i == actionActuellementExploree) {
+        for (int potentialAction = 1 ; potentialAction <= 3 ; potentialAction++) {
+            if (potentialAction == exploredAction) {
                 continue;
             }
 
-            int valuation = evaluerValeurAttendue(i);
+            int valuation = valuationSystem.getValue(potentialAction, expectations.get(potentialAction));
 
             if (bestAction == 0 || bestValue < valuation) {
-                bestAction = i;
+                bestAction = potentialAction;
                 bestValue = valuation;
             }
         }
 
         return bestAction;
     }
-
-    private int evaluerValeurAttendue(int i) {
-        return valuationSystem.getValue(i, attentes.get(i));
-    }
-
 }

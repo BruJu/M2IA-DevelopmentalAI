@@ -5,7 +5,7 @@ import aicogdev.interaction.Interaction;
 public class ValuationSystem {
     private int[][] values;
 
-    public ValuationSystem(int[] values) {
+    public ValuationSystem(int... values) {
         this.values = new int[values.length / 2][2];
 
         for (int i = 0 ; i != values.length ; i = i + 2) {
