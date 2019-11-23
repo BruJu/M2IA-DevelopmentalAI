@@ -25,25 +25,25 @@ public class AgentTP4 extends Agent {
     }
 
     @Override
-    protected String processReaction(int actionFaite, int reactionAttendue, int reactionRecue) {
+    protected String processReaction(int action, int expectedFeedback, int actualFeedback) {
 
 
-		Interaction obtenue = new Interaction(actionFaite, reactionRecue);
+		Interaction obtenue = new Interaction(action, actualFeedback);
 
 		String patternAppris = interactionPrecedente == null ? "N/A ; N/A"
 				: "[" + interactionPrecedente.toString() + ", " + obtenue.toString() + "]";
 
 		if (interactionPrecedente != null) {
-			patternAppris += " ; " + interactionsManager.stringifyValences(interactionPrecedente, actionFaite, reactionAttendue, reactionRecue);
+			patternAppris += " ; " + interactionsManager.stringifyValences(interactionPrecedente, action, expectedFeedback, actualFeedback);
 		}
 
 		if (interactionPrecedente != null)
-			interactionsManager.registerSequence(interactionPrecedente, new Interaction(actionFaite, reactionRecue));
+			interactionsManager.registerSequence(interactionPrecedente, new Interaction(action, actualFeedback));
 
 		interactionPrecedente = obtenue;
 
-		int feedback = this.feedback.getValue(actionFaite, reactionRecue);
-		return (reactionAttendue == reactionRecue ? "Content" : "Surpris")
+		int feedback = this.feedback.getValue(action, actualFeedback);
+		return (expectedFeedback == actualFeedback ? "Content" : "Surpris")
 				+ " ; " + feedback
 				+ " ; " + patternAppris;
     }

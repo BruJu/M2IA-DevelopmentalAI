@@ -75,22 +75,22 @@ public class AgentTP3 extends Agent {
     }
 
     @Override
-    protected String processReaction(int actionFaite, int reactionAttendue, int reactionRecue) {
-        Interaction obtenue = new Interaction(actionFaite, reactionRecue);
+    protected String processReaction(int action, int expectedFeedback, int actualFeedback) {
+        Interaction obtenue = new Interaction(action, actualFeedback);
 
-        int feedback = this.feedback.getValue(actionFaite, reactionRecue);
+        int feedback = this.feedback.getValue(action, actualFeedback);
 
 
 		String patternAppris = "N/A";
 
 
         if (derniereInteraction != null) {
-			Pair<Interaction, Integer> beginSequence = new Pair<>(derniereInteraction, actionFaite);
+			Pair<Interaction, Integer> beginSequence = new Pair<>(derniereInteraction, action);
 
 			boolean learnedSomething = true;
 
 			if (learnedInteractions.containsKey(beginSequence)) {
-				if (!learnedInteractions.get(beginSequence).equals(reactionAttendue)) {
+				if (!learnedInteractions.get(beginSequence).equals(expectedFeedback)) {
 					System.out.println("La séquence enregistrée était fausse");
 				} else {
 					learnedSomething = false;
@@ -98,9 +98,9 @@ public class AgentTP3 extends Agent {
 			}
 
 			if (learnedSomething) {
-				learnedInteractions.put(beginSequence, reactionRecue);
+				learnedInteractions.put(beginSequence, actualFeedback);
 				patternAppris = "[" + beginSequence.getLeft()
-						+ ", " + new Interaction(beginSequence.getRight(), reactionRecue) + "]";
+						+ ", " + new Interaction(beginSequence.getRight(), actualFeedback) + "]";
 			} else {
 				patternAppris = "";
 			}
@@ -108,7 +108,7 @@ public class AgentTP3 extends Agent {
 
 		derniereInteraction = obtenue;
 
-        return (reactionAttendue == reactionRecue ? "Content" : "Surpris")
+        return (expectedFeedback == actualFeedback ? "Content" : "Surpris")
 				+ " ; " + feedback
 				+ " ; " + patternAppris;
     }

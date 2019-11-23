@@ -19,8 +19,8 @@ public class AgentTP1 extends Agent {
 	}
 
 	@Override
-	protected String processReaction(int actionFaite, int reactionAttendue, int reactionRecue) {
-		if (Objects.equals(reactionAttendue, reactionRecue)) {
+	protected String processReaction(int action, int expectedFeedback, int actualFeedback) {
+		if (Objects.equals(expectedFeedback, actualFeedback)) {
 			numberOfTimesRight++;
 
 			boolean isBored = false;
@@ -38,7 +38,7 @@ public class AgentTP1 extends Agent {
 
 			return isBored ? "Ennuyé" : "Content";
 		} else {
-			expectations.put(actionFaite, reactionRecue);
+			expectations.put(action, actualFeedback);
 			numberOfTimesRight = 0;
 
 			return "Surpris";

@@ -28,10 +28,10 @@ public class AgentTP2 extends Agent {
     }
 
     @Override
-    protected String processReaction(int actionFaite, int reactionAttendue, int reactionRecue) {
-        int recompense = feedback.getValue(actionFaite, reactionRecue);
+    protected String processReaction(int action, int expectedFeedback, int actualFeedback) {
+        int recompense = feedback.getValue(action, actualFeedback);
 
-        if (Objects.equals(reactionAttendue, reactionRecue)) {
+        if (Objects.equals(expectedFeedback, actualFeedback)) {
             numberOfTimesRight++;
 
             boolean isBored = false;
@@ -46,7 +46,7 @@ public class AgentTP2 extends Agent {
 
 			return (isBored ? "Ennuyé" : "Content") + " ; " + recompense;
         } else {
-            attentes.put(actionFaite, reactionRecue);
+            attentes.put(action, actualFeedback);
             numberOfTimesRight = 0;
 
 
