@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * An agent that learns pairs of action - feedback.
+ * An agent that learns pairs of action - feedback with a preference towards certain pairs
  */
 public class AgentTP2 extends Agent {
     /** Maps action to feedback */
@@ -22,6 +22,7 @@ public class AgentTP2 extends Agent {
     /** Number of times the agent have to be right to be bored and explore a new action */
     private static final int NUMBER_OF_TIMES_FOR_BORED = 3;
 
+    /** Valuation of interactions */
     private ValuationSystem valuationSystem = new ValuationSystem(1, -1, 1, -1, -1, 1);
 
     @Override

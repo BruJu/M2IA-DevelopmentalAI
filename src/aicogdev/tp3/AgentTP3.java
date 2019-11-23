@@ -3,112 +3,81 @@ package aicogdev.tp3;
 import aicogdev.agent.Agent;
 import aicogdev.agent.ValuationSystem;
 import aicogdev.interaction.Interaction;
+import fr.bruju.util.MapsUtils;
 import fr.bruju.util.Pair;
 
 import java.util.*;
 
+/**
+ * An agent that learns pairs of interactions.
+ * It considers that for each (first action, first feedback, second action), there is an unique feedback
+ */
 public class AgentTP3 extends Agent {
-    private ValuationSystem valuationSystem = new ValuationSystem(new int[] { -1, 1, -1, 1 });
+    /** Learned sequences of interactions */
+    private Map<Interaction, Map<Integer, Integer>> learnedInteractions = new HashMap<>();
 
-	/**
-	 * Associate a previous interaction and a following action with the expected reaction
-	 * ie
-	 * <code>Map<Interaction(A, B), C> = D</code>
-	 * I did A, i got feedback B. If i do C, i'll get D
-	 */
-	private Map<Pair<Interaction, Integer>, Integer> learnedInteractions = new HashMap<>();
+    /** Valuation of interactions */
+    private ValuationSystem valuationSystem = new ValuationSystem(-1, 1, -1, 1);
 
-    private Interaction derniereInteraction = null;
+    /** Previous interaction : used to compute the next one */
+    private Interaction previousInteraction = null;
 
-
+    /** Number of possibles actions */
+    private static final int NUMBER_OF_ACTIONS = 2;
 
     @Override
     protected Interaction getDecision() {
-        if (derniereInteraction == null) {
+        if (previousInteraction == null) {
             return new Interaction(1, 0);
-        } else {
-            Interaction i = trouverInteractionSuivante();
-            return new Interaction(i.action, i.reaction);
         }
-    }
 
-    private Interaction trouverInteractionSuivante() {
-        List<Pair<Interaction, Integer>> avoid = new ArrayList<>();
-		List<Pair<Interaction, Integer>> exploit = new ArrayList<>();
+        Map<Integer, Integer> expectations = MapsUtils.getX(learnedInteractions, previousInteraction, HashMap::new);
 
-        // Find the interactions that we think are possible at this point
-        learnedInteractions
-				.entrySet()
-				.stream()
-				// Keep relevant first interaction
-				.filter(entry -> entry.getKey().getLeft().equals(derniereInteraction))
-				// Keep the following action - reactions
-				.map(entry -> new Interaction(entry.getKey().getRight(), entry.getValue()))
-				// Add the relevant interactions
-				.forEach(expectedInteraction -> {
-					int expectedFeedback = valuationSystem.getValue(expectedInteraction);
+        int bestAction = 1;
+        int expectedFeedback = 0;
+        int valueBestAction = Integer.MIN_VALUE;
 
-					if (expectedFeedback < 0) {
-						avoid.add(new Pair<>(expectedInteraction, expectedFeedback));
-					} else {
-						exploit.add(new Pair<>(expectedInteraction, expectedFeedback));
-					}
-				});
+        for (int action = 1 ; action <= NUMBER_OF_ACTIONS ; action++) {
+            int feedback = expectations.getOrDefault(action, 0);
 
+            int value = feedback == 0 ? 0 : valuationSystem.getValue(action, feedback);
 
-        if (exploit.isEmpty()) {
-            Set<Integer> choices = new TreeSet<>();
-            choices.add(1);
-            choices.add(2);
-
-            avoid.forEach(p -> choices.remove(p.getLeft().action));
-
-            for (Integer i : choices) {
-                return new Interaction(i, 0);
+            if (valueBestAction < value) {
+                bestAction = action;
+                expectedFeedback = feedback;
+                valueBestAction = value;
             }
-
-            return new Interaction(1, 0);
-        } else {
-        	return exploit.stream().max((i1, i2) -> -Integer.compare(i1.getRight(), i2.getRight())).get().getLeft();
         }
+
+        return new Interaction(bestAction, expectedFeedback);
     }
 
     @Override
     protected String[] processReaction(int action, int expectedFeedback, int actualFeedback) {
-        Interaction obtenue = new Interaction(action, actualFeedback);
+        Interaction producedInteraction = new Interaction(action, actualFeedback);
+        int value = this.valuationSystem.getValue(producedInteraction);
 
-        int feedback = this.valuationSystem.getValue(action, actualFeedback);
+        if (expectedFeedback == actualFeedback) {
+            // Situation that the agent already knows
+            previousInteraction = producedInteraction;
+            return new String[]{"Happy", Integer.toString(value), ""};
+        } else if (previousInteraction == null) {
+            // No previous interaction : can't learn sequence
+            previousInteraction = producedInteraction;
+            return new String[]{"Surprised", Integer.toString(value), "N/A"};
+        } else {
+            String type = "Learned";
 
+            // Learn new sequence
+            Map<Integer, Integer> expectations = MapsUtils.getX(learnedInteractions, previousInteraction, HashMap::new);
 
-		String patternAppris = "N/A";
+            if (expectedFeedback != 0) { type = "Revised"; }
+            expectations.put(action, actualFeedback);
 
+            String learnedSequence = "[" + previousInteraction.toString() + ";" + producedInteraction.toString() + "]";
 
-        if (derniereInteraction != null) {
-			Pair<Interaction, Integer> beginSequence = new Pair<>(derniereInteraction, action);
-
-			boolean learnedSomething = true;
-
-			if (learnedInteractions.containsKey(beginSequence)) {
-				if (!learnedInteractions.get(beginSequence).equals(expectedFeedback)) {
-					System.out.println("La séquence enregistrée était fausse");
-				} else {
-					learnedSomething = false;
-				}
-			}
-
-			if (learnedSomething) {
-				learnedInteractions.put(beginSequence, actualFeedback);
-				patternAppris = "[" + beginSequence.getLeft()
-						+ ", " + new Interaction(beginSequence.getRight(), actualFeedback) + "]";
-			} else {
-				patternAppris = "";
-			}
+            previousInteraction = producedInteraction;
+            return new String[]{type, Integer.toString(value), learnedSequence};
         }
-
-		derniereInteraction = obtenue;
-
-        return new String[] { (expectedFeedback == actualFeedback ? "Content" : "Surpris")
-				+ " ; " + feedback
-				+ " ; " + patternAppris};
     }
 }
