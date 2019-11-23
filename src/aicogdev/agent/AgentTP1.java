@@ -28,24 +28,24 @@ public class AgentTP1 extends Agent {
 	}
 
 	@Override
-	protected String processReaction(int action, int expectedFeedback, int actualFeedback) {
+	protected String[] processReaction(int action, int expectedFeedback, int actualFeedback) {
 		if (Objects.equals(expectedFeedback, actualFeedback)) {
 			numberOfTimesRight++;
 
 			if (numberOfTimesRight != NUMBER_OF_TIMES_FOR_BORED) {
-			    return "Happy";
+			    return new String[]{ "Happy" };
             } else {
 			    // Change current action
                 exploredAction = exploredAction == 1 ? 2 : 1;
                 numberOfTimesRight = 0;
 
-			    return "Bored";
+			    return new String[]{ "Bored" };
             }
 		} else {
 			expectations.put(action, actualFeedback);
 			numberOfTimesRight = 0;
 
-			return "Surprised";
+			return new String[]{ "Surprised" };
 		}
 	}
 }

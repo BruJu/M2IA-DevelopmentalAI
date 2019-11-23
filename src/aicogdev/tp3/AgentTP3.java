@@ -75,7 +75,7 @@ public class AgentTP3 extends Agent {
     }
 
     @Override
-    protected String processReaction(int action, int expectedFeedback, int actualFeedback) {
+    protected String[] processReaction(int action, int expectedFeedback, int actualFeedback) {
         Interaction obtenue = new Interaction(action, actualFeedback);
 
         int feedback = this.feedback.getValue(action, actualFeedback);
@@ -108,8 +108,8 @@ public class AgentTP3 extends Agent {
 
 		derniereInteraction = obtenue;
 
-        return (expectedFeedback == actualFeedback ? "Content" : "Surpris")
+        return new String[] { (expectedFeedback == actualFeedback ? "Content" : "Surpris")
 				+ " ; " + feedback
-				+ " ; " + patternAppris;
+				+ " ; " + patternAppris};
     }
 }

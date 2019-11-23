@@ -2,6 +2,8 @@ package aicogdev.agent;
 
 import aicogdev.interaction.Interaction;
 
+import java.util.StringJoiner;
+
 /**
  * Represents an agent that can require an action and consider the feedback
  */
@@ -25,12 +27,18 @@ public abstract class Agent {
      * @param reaction The produced feedback
      */
     public final void receiveFeedback(int reaction) {
-        String resultat = processReaction(expectedInteraction.action, expectedInteraction.reaction, reaction);
+        String[] resultats = processReaction(expectedInteraction.action, expectedInteraction.reaction, reaction);
 
-        System.out.println(expectedInteraction.action + " ; "
-                + expectedInteraction.reaction + " ; "
-				+ reaction + " ; "
-                + resultat);
+        StringJoiner sj = new StringJoiner(" | ", "| ", " |");
+        sj.add(Integer.toString(expectedInteraction.action));
+        sj.add(Integer.toString(expectedInteraction.reaction));
+        sj.add(Integer.toString(reaction));
+
+        for (String resultat : resultats) {
+            sj.add(resultat);
+        }
+
+        System.out.println(sj.toString());
     }
 
     // ==== Implementation of agents
@@ -46,7 +54,7 @@ public abstract class Agent {
      * @param action The action required by the agent
      * @param expectedFeedback The feedback the agent expected to have
      * @param actualFeedback The feedback produced by the environment
-     * @return A string that represents some notes to print to the user about the agent internal state
+     * @return The strings that represents some notes to print to the user about the agent internal state
      */
-	protected abstract String processReaction(int action, int expectedFeedback, int actualFeedback);
+	protected abstract String[] processReaction(int action, int expectedFeedback, int actualFeedback);
 }
