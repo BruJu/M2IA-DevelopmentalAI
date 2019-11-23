@@ -1,7 +1,8 @@
 package aicogdev.environnement;
 
 /**
- * Un environnement qui renvoie la réaction opposée à l'action faite (action possibles : 1 et 2)
+ * An environment that produces an opposite feedback from the action.
+ * Accepts 1 and 2 as input.
  */
 public class Environnement1Bis implements Environnement {
 	@Override

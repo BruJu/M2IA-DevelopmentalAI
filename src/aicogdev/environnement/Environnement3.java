@@ -1,20 +1,17 @@
 package aicogdev.environnement;
 
 /**
- * Un environnement qui renvoie 1 si la dernière action est égale à l'action en cours, 2 sinon
+ * An environment that returns 1 if the action is the same as the previous one and 2 if it is different.
  */
 public class Environnement3 implements Environnement {
-    /**
-     * Dernière action produite
-     */
-    int derniereAction = 0;
+    private int lastAction = 0;
 
     @Override
     public int agir(int action) {
-        if (action == derniereAction) {
+        if (action == lastAction) {
             return 1;
         } else {
-            derniereAction = action;
+            lastAction = action;
             return 2;
         }
     }

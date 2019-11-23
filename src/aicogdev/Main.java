@@ -1,10 +1,8 @@
 package aicogdev;
 
 import aicogdev.agent.Agent;
-import aicogdev.agent.AgentTP1;
-import aicogdev.agent.AgentTP2;
 import aicogdev.environnement.*;
-import aicogdev.tp3.AgentTP3;
+import aicogdev.agent.AgentTP3;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {

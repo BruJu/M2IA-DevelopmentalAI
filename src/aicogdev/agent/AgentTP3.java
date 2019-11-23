@@ -1,4 +1,4 @@
-package aicogdev.tp3;
+package aicogdev.agent;
 
 import aicogdev.agent.Agent;
 import aicogdev.agent.ValuationSystem;

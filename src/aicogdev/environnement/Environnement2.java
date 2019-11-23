@@ -1,7 +1,8 @@
 package aicogdev.environnement;
 
 /**
- * Un environnement qui renvoie 1 si l'action 1 est faite, 2 si l'action 2 ou 3 est faite
+ * An environment that produces the feedback 1 to the action 1, and 2 for every other action.
+ * Accepts 1, 2 and 3 as inputs.
  */
 public class Environnement2 implements Environnement {
     @Override

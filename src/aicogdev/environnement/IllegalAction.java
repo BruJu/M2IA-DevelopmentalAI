@@ -1,7 +1,7 @@
 package aicogdev.environnement;
 
 /**
- * Exception jetable par les environnements en cas d'action illégale
+ * Throwable exception by environments in case of illegal action
  */
 public class IllegalAction extends RuntimeException {
     public IllegalAction() {

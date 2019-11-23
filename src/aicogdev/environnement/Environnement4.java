@@ -1,21 +1,22 @@
 package aicogdev.environnement;
 
 /**
- * Un environnement qui agit comme l'environnement 1, puis au bout de 10 actions se met à simuler l'environment 3
+ * An environment that acts like the environment 3, then switch to the environment 1.
  */
 public class Environnement4 implements Environnement {
-    private Environnement environnementSimule = new Environnement1();
+    private static final int NUMBER_OF_ACTIONS_BEFORE_SWITCH = 0;
 
-    private int number_of_actions = 0;
+    private Environnement simulatedEnvironment = new Environnement1();
+    private int numberOfActions = 0;
 
     @Override
     public int agir(int action) {
-        if (number_of_actions == 10) {
-            environnementSimule = new Environnement3();
+        if (numberOfActions == NUMBER_OF_ACTIONS_BEFORE_SWITCH) {
+            simulatedEnvironment = new Environnement3();
         }
 
-        number_of_actions++;
+        numberOfActions++;
 
-        return environnementSimule.agir(action);
+        return simulatedEnvironment.agir(action);
     }
 }
