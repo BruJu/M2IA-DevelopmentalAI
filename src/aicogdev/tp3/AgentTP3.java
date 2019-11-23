@@ -1,15 +1,14 @@
 package aicogdev.tp3;
 
 import aicogdev.agent.Agent;
-import aicogdev.agent.Feedback;
+import aicogdev.agent.ValuationSystem;
 import aicogdev.interaction.Interaction;
 import fr.bruju.util.Pair;
 
-import javax.sound.midi.Sequence;
 import java.util.*;
 
 public class AgentTP3 extends Agent {
-    private Feedback feedback = new Feedback(new int[] { -1, 1, -1, 1 });
+    private ValuationSystem valuationSystem = new ValuationSystem(new int[] { -1, 1, -1, 1 });
 
 	/**
 	 * Associate a previous interaction and a following action with the expected reaction
@@ -47,7 +46,7 @@ public class AgentTP3 extends Agent {
 				.map(entry -> new Interaction(entry.getKey().getRight(), entry.getValue()))
 				// Add the relevant interactions
 				.forEach(expectedInteraction -> {
-					int expectedFeedback = feedback.getValue(expectedInteraction);
+					int expectedFeedback = valuationSystem.getValue(expectedInteraction);
 
 					if (expectedFeedback < 0) {
 						avoid.add(new Pair<>(expectedInteraction, expectedFeedback));
@@ -78,7 +77,7 @@ public class AgentTP3 extends Agent {
     protected String[] processReaction(int action, int expectedFeedback, int actualFeedback) {
         Interaction obtenue = new Interaction(action, actualFeedback);
 
-        int feedback = this.feedback.getValue(action, actualFeedback);
+        int feedback = this.valuationSystem.getValue(action, actualFeedback);
 
 
 		String patternAppris = "N/A";

@@ -1,6 +1,6 @@
 package aicogdev.tp3;
 
-import aicogdev.agent.Feedback;
+import aicogdev.agent.ValuationSystem;
 import aicogdev.interaction.Interaction;
 import fr.bruju.util.Pair;
 
@@ -9,10 +9,10 @@ import java.util.*;
 public class PossibleInteractions {
     private Map<Interaction, Map<Integer, PossibleInteraction>> interactions = new HashMap<>();
 
-    private Feedback feedback;
+    private ValuationSystem valuationSystem;
 
-    public PossibleInteractions(Feedback feedback) {
-        this.feedback = feedback;
+    public PossibleInteractions(ValuationSystem valuationSystem) {
+        this.valuationSystem = valuationSystem;
     }
 
     public void registerSequence(Interaction premiere, Interaction seconde) {
@@ -51,7 +51,7 @@ public class PossibleInteractions {
         Map<Integer, PossibleInteraction> list = new HashMap<>();
 
         for (int action = 1 ; action <= 2 ; action++) {
-            list.put(action, new PossibleInteraction(action, feedback));
+            list.put(action, new PossibleInteraction(action, valuationSystem));
         }
 
         return list;

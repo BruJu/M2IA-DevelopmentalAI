@@ -1,19 +1,19 @@
 package aicogdev.tp3;
 
 import aicogdev.agent.Agent;
-import aicogdev.agent.Feedback;
+import aicogdev.agent.ValuationSystem;
 import aicogdev.interaction.Interaction;
 
 public class AgentTP4 extends Agent {
 
-    private Feedback feedback;
+    private ValuationSystem valuationSystem;
 
     private PossibleInteractions interactionsManager;
     private Interaction interactionPrecedente;
 
     public AgentTP4() {
-        feedback = new Feedback(new int[] {1,1,-1,-1});
-        interactionsManager = new PossibleInteractions(feedback);
+        valuationSystem = new ValuationSystem(new int[] {1,1,-1,-1});
+        interactionsManager = new PossibleInteractions(valuationSystem);
         interactionPrecedente = null;
     }
 
@@ -42,7 +42,7 @@ public class AgentTP4 extends Agent {
 
 		interactionPrecedente = obtenue;
 
-		int feedback = this.feedback.getValue(action, actualFeedback);
+		int feedback = this.valuationSystem.getValue(action, actualFeedback);
 		return new String[] { (expectedFeedback == actualFeedback ? "Content" : "Surpris")
 				+ " ; " + feedback
 				+ " ; " + patternAppris};

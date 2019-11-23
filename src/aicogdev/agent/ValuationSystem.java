@@ -2,10 +2,10 @@ package aicogdev.agent;
 
 import aicogdev.interaction.Interaction;
 
-public class Feedback {
+public class ValuationSystem {
     private int[][] values;
 
-    public Feedback(int[] values) {
+    public ValuationSystem(int[] values) {
         this.values = new int[values.length / 2][2];
 
         for (int i = 0 ; i != values.length ; i = i + 2) {

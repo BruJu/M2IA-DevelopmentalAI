@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class AgentTP2 extends Agent {
-    private Feedback feedback = new Feedback(new int[]{
+    private ValuationSystem valuationSystem = new ValuationSystem(new int[]{
             1, 1,
             1, -1,
             -1, 1
@@ -29,7 +29,7 @@ public class AgentTP2 extends Agent {
 
     @Override
     protected String[] processReaction(int action, int expectedFeedback, int actualFeedback) {
-        int recompense = feedback.getValue(action, actualFeedback);
+        int recompense = valuationSystem.getValue(action, actualFeedback);
 
         if (Objects.equals(expectedFeedback, actualFeedback)) {
             numberOfTimesRight++;
@@ -83,7 +83,7 @@ public class AgentTP2 extends Agent {
     }
 
     private int evaluerValeurAttendue(int i) {
-        return feedback.getValue(i, attentes.get(i));
+        return valuationSystem.getValue(i, attentes.get(i));
     }
 
 }

@@ -1,6 +1,6 @@
 package aicogdev.tp3;
 
-import aicogdev.agent.Feedback;
+import aicogdev.agent.ValuationSystem;
 import aicogdev.interaction.Interaction;
 import fr.bruju.util.Pair;
 
@@ -8,10 +8,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PossibleInteraction {
-    public PossibleInteraction(int action, Feedback feedback) {
+    public PossibleInteraction(int action, ValuationSystem valuationSystem) {
         this.action = action;
-        possibleReactions.put(1, new ReactionValeur(feedback.getValue(action, 1)));
-        possibleReactions.put(2, new ReactionValeur(feedback.getValue(action, 2)));
+        possibleReactions.put(1, new ReactionValeur(valuationSystem.getValue(action, 1)));
+        possibleReactions.put(2, new ReactionValeur(valuationSystem.getValue(action, 2)));
     }
 
 	public String stringifyValences(int reactionAttendue, int reactionRecue) {
