@@ -6,16 +6,25 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * An agent that learns pairs of action - feedback.
+ */
 public class AgentTP1 extends Agent {
+    /** Maps action to feedback */
 	private Map<Integer, Integer> expectations = new HashMap<>();
 
-	private int actionWanted = 1;
+	/** Currently explored action */
+	private int exploredAction = 1;
 
+	/** Number of times the agent correctly predicted the action */
 	private int numberOfTimesRight = 0;
+
+	/** Number of times the agent have to be right to be bored and explore a new action */
+	private static final int NUMBER_OF_TIMES_FOR_BORED = 3;
 
 	@Override
 	protected Interaction getDecision() {
-		return new Interaction(actionWanted, expectations.getOrDefault(actionWanted, 0));
+		return new Interaction(exploredAction, expectations.getOrDefault(exploredAction, 0));
 	}
 
 	@Override
@@ -23,25 +32,20 @@ public class AgentTP1 extends Agent {
 		if (Objects.equals(expectedFeedback, actualFeedback)) {
 			numberOfTimesRight++;
 
-			boolean isBored = false;
+			if (numberOfTimesRight != NUMBER_OF_TIMES_FOR_BORED) {
+			    return "Happy";
+            } else {
+			    // Change current action
+                exploredAction = exploredAction == 1 ? 2 : 1;
+                numberOfTimesRight = 0;
 
-			if (numberOfTimesRight == 3) {
-				isBored = true;
-
-				if (actionWanted == 1)
-					actionWanted = 2;
-				else
-					actionWanted = 1;
-
-				numberOfTimesRight = 0;
-			}
-
-			return isBored ? "Ennuyé" : "Content";
+			    return "Bored";
+            }
 		} else {
 			expectations.put(action, actualFeedback);
 			numberOfTimesRight = 0;
 
-			return "Surpris";
+			return "Surprised";
 		}
 	}
 }
