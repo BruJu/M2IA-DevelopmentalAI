@@ -1,5 +1,5 @@
 
-# Agent développemental
+<h1 style="text-align:center;">Agent développemental</h1>
 
 *Étudiant 1* : Julian BRUYAT 11706770
 
@@ -222,22 +222,29 @@ issus du fait qu'il s'arrêterait de changer d'action).
 ### Trace 
 
 
-| Action | Attendu | Obtenu | Réaction de l'agent | Valence | Séquence apprise |
-| ------ | ------- | --------------- | ------------------- | --- | --- |
-| 1 | 0 | 2 | Surprised | 1 | N/A |
-| 1 | 0 | 1 | Learned | -1 | [I12;I11] |
-| 1 | 0 | 1 | Learned | -1 | [I11;I11] |
-| 2 | 0 | 2 | Learned | 1 | [I11;I22] |
-| 1 | 0 | 2 | Learned | 1 | [I22;I12] |
-| 2 | 0 | 2 | Learned | 1 | [I12;I22] |
-| 1 | 2 | 2 | Happy | 1 |  |
-| 2 | 2 | 2 | Happy | 1 |  |
-| 1 | 2 | 2 | Happy | 1 |  |
-| 2 | 2 | 2 | Happy | 1 |  |
+| Étape | Action | Attendu | Obtenu | Réaction de l'agent | Valence | Séquence apprise |
+| ----- | ------ | ------- | --------------- | ------------------- | --- | --- |
+| #1 | 1 | 0 | 2 | Surprised | 1 | N/A |
+| #2 | 1 | 0 | 1 | Learned | -1 | [I12;I11] |
+| #3 | 1 | 0 | 1 | Learned | -1 | [I11;I11] |
+| #4 | 2 | 0 | 2 | Learned | 1 | [I11;I22] |
+| #5 | 1 | 0 | 2 | Learned | 1 | [I22;I12] |
+| #6 | 2 | 0 | 2 | Learned | 1 | [I12;I22] |
+| #7 | 1 | 2 | 2 | Happy | 1 |  |
+| #8 | 2 | 2 | 2 | Happy | 1 |  |
+| #9 | 1 | 2 | 2 | Happy | 1 |  |
+| 10 | 2 | 2 | 2 | Happy | 1 |  |
 
 On remarque que le résultat de la première interaction n'est utilisé que pour construire des
 séquences (il n'apprend rien au pas 1), tandis que les autres sont utilisés à la fois pour construire la séquence
 suivante (comme préfixe) et pour pouvoir finir la séquence en cours (comme suffixe).
+
+On peut interpréter le comportement de cet agent comme étant un agent classique en IA : au début il cherche
+à observer son environnement mais il est obligé de déclencher des actions pour observer (étapes #1 à #6). Une fois
+à l'étape 7, l'agent observe qu'il vient de produire l'interaction I22, et qu'il connait déjà une chaîne qui lui
+plait avec pour prefixe I22 (la chaîne I22 - I12 produite à l'étape #5). Il l'exploite donc et envoie l'action 1
+à l'environnement.
+
 
 ## TP 4 : Apprentissage d'environnements pouvant changer
 
@@ -404,7 +411,7 @@ recommencer à explorer I22-I1x dont la valeur est égale à I22-I2x lors de l'�
 puis la dépasse après l'étape 36.
 
 Après l'étape 36, l'agent réussit à n'avoir que des interactions positives : il est
-suffisamment habitué au nouvel environnement et déleste ses anciennes habitudes (les poids liés à l'ancien environnement sont moins élevés que ceux liés au nouvel).
+suffisamment habitué au nouvel environnement et déleste ses anciennes habitudes (les poids liés à l'ancien environnement sont moins élevés que ceux liés au nouveau).
 
 Le modèle de l'agent de ce TP converge cependant moins vite que celui du TP 3 sur ce
 même environnement. Néanmoins il pourrait s'adapter à des valences différentes de -1 et 1. En particulier,
