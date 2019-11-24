@@ -1,30 +1,24 @@
+
 # Agent développemental
 
-*Etudiant 1* : Julian BRUYAT 11706770
+*Étudiant 1* : Julian BRUYAT 11706770
 
-*Etudiant 2* : Jean-Philippe TISSERAND 11926733
+*Étudiant 2* : Jean-Philippe TISSERAND 11926733
 
 ## Introduction
 
 Les agents développementaux sont des agents qui n'ont aucune connaissance à priori de l'environnement.
-Leur particularité est qu'ils apprennent de manière active : contrairement à un agent classique qui apprendrait
-en observant l'environnement puis en faisant une action, les agents développementaux se développent en faisant une
-action et en observant quelle réponse leur donne l'environnement.
+Leur particularité est qu'ils apprennent en étant "actifs" : contrairement à un agent classique qui apprendrait en observant l'environnement puis en faisant une action, les agents développementaux se développent en  faisant une action et en observant quelle réponse leur donne l'environnement.
 
-Ce TP a pour objectif de développer des agents développementaux simples évoluant dans des environnements simples sans
-en avoir de connaissance à priori.
+Ce TP a pour objectif de développer des agents développementaux simples évoluant dans des environnements simples sans en avoir de connaissance à priori.
 
-Nous avons développé les agents et les environnements en Java. Le code est disponible à l'adresse
-https://www.github.com/BruJu/aidev mais pour chaque agent, nous nous efforcerons de décrire l'algorithme
-que nous avons implémenté en utilisant un pseudo code Java donnant l'implémentation générale (qui ne gère pas
-les cas particuliers comme les valeurs null qui relèvent plus du détail d'implémentation).
+Nous avons développé les agents et les environnements en Java. Le code est disponible à l'adresse https://www.github.com/BruJu/aidev mais pour chaque agent, nous nous efforcerons de décrire l'algorithme que nous avons implémenté en utilisant un pseudo code Java donnant l'implémentation générale (qui ne gère  pas les cas particuliers comme les valeurs `null` qui relèvent plus du détail d'implémentation).
 
 ## TP 1 : Agent dans un environnement donnant toujours la même réponse à une action donnée
 
-Le premier TP consiste à développer un agent qui apprend les réactions produites par son environnement.
+Le premier TP consiste à développer un agent qui apprend les réactions produites par un environnement simple.
 
-L'environnement est simple (il renvoie toujours la même réaction à une action donnée) : l'objectif de l'agent
-est d'apprendre toutes les interactions disponibles.
+L'environnement est simple dans le sens où il renvoie toujours la même réaction à une action donnée). L'objectif de l'agent est d'apprendre toutes les interactions disponibles.
 
 ### Implémentation
 
@@ -62,7 +56,7 @@ class Agent {
 
 L'environnement 1 est un environnement qui produit un feedback égal à l'action faite.
 
-| Action | Attendu | Obtenu | Reaction de l'agent |
+| Action | Attendu | Obtenu | Réaction de l'agent |
 | ------ | ------- | --------------- | ------------------- |
 | 1 | 0 | 1 | Surprised |
 | 1 | 1 | 1 | Happy |
@@ -83,26 +77,18 @@ L'environnement 1 est un environnement qui produit un feedback égal à l'action
 Une fois que la map a été initialisée pour l'action, l'agent n'a aucun problème pour prédire l'action obtenue et se
 lasse vite.
 
-Nous avons également implémenté l'environnement qui renvoie 2 à l'action 1 et 1 à l'action 2. Nous ne mettons pas la
-trace car elle est similaire à la précédente : après la première fois que l'agent fait une action donnée, il prédit à
-chaque fois les réactions suivantes provenant de cette action se lasse rapidement.
+Nous avons également implémenté l'environnement qui renvoie 2 à l'action 1 et 1 à l'action 2. Nous ne mettons pas la trace car elle est similaire à la précédente : après la première fois que l'agent fait une action donnée, il prédit à chaque fois correctement le feedback provenant de cette action se lasse rapidement.
 
-Nous remarquons que lors de la phase d'apprentissage, l'agent effectue 4 fois de suite la même action (une fois pour
-apprendre, la réponse le surprend, puis 3 fois où il obtient la réponse attendue). Lorsqu'il revient à une action, il
-n'effectue plus que 3 fois l'action.
+Nous remarquons que lors de la phase d'apprentissage, l'agent effectue 4 fois de suite la même action (une fois pour apprendre, la réponse le surprend, puis 3 fois où il obtient la réponse attendue). Lorsqu'il revient à une action, il n'effectue plus que 3 fois l'action.
 
-Sur un agent plus évolué, on pourrait imaginer implémenter volontairement ce mécanisme en faisant se lasser de plus
-en plus vite sur les interactions (ou les séquences d'interactions) qu'il connait déjà pour qu'il explore de nouvelles
-possibilités et sorte de sa zone de confort.
+Sur un agent plus évolué, on pourrait imaginer implémenter volontairement ce mécanisme en faisant se lasser de plus en plus vite sur les interactions (ou les séquences d'interactions) qu'il connait déjà pour qu'il explore de nouvelles possibilités et sorte de sa zone de confort.
 
 ## TP 2 : Agent préférant certaines paires d'action - feedback
 
 ### Implémentation
 
 Le fonctionnement de l'agent est identique au premier, excepté pour la fonction de changement d'action.
-Si dans le TP1, la fonction de changement d'action est triviale (renvoie 1 si l'action faite était la 2, renvoie 2 si
-l'action faite était la 1), ici nous avons deux phases dans la fonction de changement d'état : une phase d'exploration
-et une phase d'exploitation.
+Si dans le TP1, la fonction de changement d'action est trivial (renvoie 1 si l'action faite était la 2, renvoie 2 si l'action faite était la 1), ici nous avons deux phases dans la fonction de changement d'état : une phase d'exploration et une phase d'exploitation.
 
 ```java
 class Agent {
@@ -140,13 +126,11 @@ class Agent {
     }
 }
 ```
-Nous considérons que la valeur d'une action est égale à la valeur de la paire (action, feedback) qu'on a obtenu la
-dernière fois qu'on a fait cette action.
+Nous considérons que la valeur d'une action est égale à la valeur de la paire (action, feedback) qu'on a obtenue la dernière fois que l'on a fait cette action.
 
 ### Trace
 
-
-| Action | Attendu | Obtenu | Reaction de l'agent | Valence |
+| Action | Attendu | Obtenu | Réaction de l'agent | Valence |
 | ------ | ------- | --------------- | ------------------- | --- |
 | 1 | 0 | 1 | Surprised | 1 |
 | 1 | 1 | 1 | Happy | 1 |
@@ -170,8 +154,7 @@ dernière fois qu'on a fait cette action.
 | 1 | 1 | 1 | Happy | 1 |
 | 1 | 1 | 1 | Bored | 1 |
 
-Par abus, nous avons gardé le fait qu'un agent est content même si la valeur qu'il a de l'interaction est négative : il
-est "content" d'avoir prédit correctement l'interaction.
+Par abus, nous avons gardé le fait qu'un agent est content même si la valeur qu'il donne à l'interaction est négative : il est "content" d'avoir prédit correctement l'interaction.
 
 Lors de la phase d'exploration, l'agent explore toutes les actions.
 Lors de la phase d'exploitation, il n'effectue pas l'action 2. Il préfère alterner entre 1 et 3 qui ont une valeur plus
@@ -228,20 +211,18 @@ class Agent {
 Si pour une interaction précédente et une action, nous n'avons pas de feedback, alors nous considérons que
 la valeur de l'interaction est 0 (neutre) pour la favoriser par rapport à une interaction qui serait défavorable.
 
-Cette approche prudente ne permet néanmoins pas d'explorer toutes les possibilités : si la séquence AaFbAc produit
-un feedback Fd et que AcFd a pour valeur 1, si on l'explore avant AaFbAeFg et que AeFg a pour valeur 2, alors AeFg ne
-sera jamais exploré alors qu'il est plus favorable.
+Cette approche prudente ne permet néanmoins pas d'explorer toutes les possibilités : si la séquence AaFbAc produit un feedback Fd et que AcFd a pour valeur 1, si on l'explore avant AaFbAeFg et que AeFg a pour valeur 2, alors AeFg ne sera jamais exploré alors qu'elle est plus favorable.
 
 Nous avons retiré la mécanique d'ennui afin de ne pas complexifier inutilement le code : en effet
 l'environnement que nous essayons de faire apprendre à l'agent et son système de valeur font qu'il ne
 devrait pas répéter son action (parce qu'il n'aime pas avoir un feedback de 1 qui serait
-issus du fait qu'il s'arréterait de changer d'action).
+issus du fait qu'il s'arrêterait de changer d'action).
 
 
 ### Trace 
 
 
-| Action | Attendu | Obtenu | Reaction de l'agent | Valence | Séquence apprise |
+| Action | Attendu | Obtenu | Réaction de l'agent | Valence | Séquence apprise |
 | ------ | ------- | --------------- | ------------------- | --- | --- |
 | 1 | 0 | 2 | Surprised | 1 | N/A |
 | 1 | 0 | 1 | Learned | -1 | [I12;I11] |
@@ -254,11 +235,9 @@ issus du fait qu'il s'arréterait de changer d'action).
 | 1 | 2 | 2 | Happy | 1 |  |
 | 2 | 2 | 2 | Happy | 1 |  |
 
-
 On remarque que le résultat de la première interaction n'est utilisé que pour construire des
 séquences (il n'apprend rien au pas 1), tandis que les autres sont utilisés à la fois pour construire la séquence
 suivante (comme préfixe) et pour pouvoir finir la séquence en cours (comme suffixe).
-
 
 ## TP 4 : Apprentissage d'environnements pouvant changer
 
@@ -311,7 +290,7 @@ class Agent {
 ```
 
 Les principales modifications sont :
-- Une action n'est plus évaluée selon le feedback auquel on s'attend mais l'ensemble des feedback déjà obtenus.
+- Une action n'est plus évaluée selon le feedback auquel on s'attend (qui est le dernier qu'on a eu pour l'interaction précédente et action faite à la suite de cette interaction) mais l'ensemble des feedback déjà obtenus.
 - A chaque pas, on enregistre qu'on a vu la séquence interaction précédente - interaction actuelle.
 
 ### Vue globale
@@ -320,7 +299,7 @@ Nous avons exécuté sur les 4 environnements demandés (environnement envoyant 
 2, environnement envoyant 2 si l'action est différente de la précédente et environnement se comportant comme le 3 puis
 comme le 1) avec les 3 systèmes de valeur demandés (un agent qui
 préfère les interactions issues de l'action 1, un agent qui préfère les
-interactions issues de l'action 2 et un agent préférent obtenir le feedback 2).
+interactions issues de l'action 2 et un agent préfèrent obtenir le feedback 2).
 
 Nous représentons dans le tableau le bilan de l'exécution de ces agents sous le format a - b - c où a est le
 nombre d'interactions positives lors des 10 premiers pas, b est le nombre d'interactions
@@ -344,7 +323,7 @@ compte que l'environnement a changé.
 - L'agent favorisant les interactions issues de l'action 2 teste naïvement l'action 1 en premier
 lorsqu'il ne sait pas quoi faire. Il n'apprend rien de sa première action. Par la suite, à chaque
 fois qu'il va faire une nouvelle interaction, l'agent va essayer l'action 1 pour ensuite
-se rabattre sur l'action 2 lors des prochaines occurences. Ainsi, on peut faire
+se rabattre sur l'action 2 lors des prochaines occurrences. Ainsi, on peut faire
 une corrélation entre le nombre d'échecs et le nombre de séquences qu'il a appris.
     - On note que contrairement à l'agent 1, l'agent 2 peut avoir une intuition que l'environnement
 a changé.
@@ -359,13 +338,13 @@ ferait l'agent du TP3 (on voit que à part lors de la phase d'initialisation, il
 - Dans tous les cas sur le long terme, tous nos agents finissent par savoir comment exploiter l'environnement pour avoir
 des interactions qu'il aime.
 
-### Etude d'un agent cherchant le feedback 2 dans un environnement changeant
+### Étude d'un agent cherchant le feedback 2 dans un environnement changeant
 
 Le tableau précédent montre que l'agent est capable de s'adapter à l'environnement 4.
 
 Nous allons étudier la trace pour un agent qui attend le feedback 2.
 
-| Etape | Action | Attendu | Obtenu | Reaction de l'agent | Valence | Préfixe | Evaluation Action 1 | Evaluation Action 2 |
+| Étape | Action | Attendu | Obtenu | Réaction de l'agent | Valence | Préfixe | Évaluation Action 1 | Évaluation Action 2 |
 | ----- | ------ | ------- | ------ | ------------------- | ------- | ------- | --------------------- | --------------------- |
 | #1 | 1 | 0 | 1 | Surprised | -1 | N/A | N/A | N/A |
 | #2 | 1 | 1 | 1 | Happy | -1 | I11 | 0+0=0 | 0+0=0 |
@@ -423,12 +402,12 @@ recommencer à explorer I22-I1x dont la valeur est égale à I22-I2x lors de l'�
 puis la dépasse après l'étape 36.
 
 Après l'étape 36, l'agent réussit à n'avoir que des interactions positives : il est
-suffisament habitué au nouvel environnement et les poids de l'ancien n'ont plus d'influence
+suffisamment habitué au nouvel environnement et les poids de l'ancien n'ont plus d'influence
 néfaste sur ce qu'il avait appris.
 
 Le modèle de l'agent de ce TP arrive néanmoins moins vite à convergence que celui du TP 3 sur ce
 même environnement. Néanmoins il pourrait s'adapter à des valences différentes de -1 et 1. En particulier,
-dans un environnement qui renverait le feedback 1 une fois sur 10 et le feedback 2 sinon, si
+dans un environnement qui renverrait le feedback 1 une fois sur 10 et le feedback 2 sinon, si
 l'agent porte une valeur de 50 au feedback 1 et -1 au feedback 2, ce modèle peut potentiellement
 favoriser l'action menant à ces feedback, en étant conscient qu'il aura surement le feedback 2 mais qu'il
 peut gagner beaucoup, alors que l'agent du TP 3 restera sur l'idée que cette interaction produit un rendement négatif. 
