@@ -1,16 +1,16 @@
 package aicogdev.agent;
 
 import aicogdev.interaction.Interaction;
+import fr.bruju.util.ListSearch;
 import fr.bruju.util.MapsUtils;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * An agent that learns pairs of interactions.
  * It considers that for each (first action, first feedback, second action), there is an unique feedback
  */
-public class AgentTP4Rework extends Agent {
+public class AgentTP4 extends Agent {
     /** Learned sequences of interactions */
     private Map<Interaction, Map<Integer, PossibleFeedback>> learnedInteractions = new HashMap<>();
 
@@ -56,28 +56,28 @@ public class AgentTP4Rework extends Agent {
         if (previousInteraction == null) {
             // No previous interaction : can't learn sequence
             previousInteraction = producedInteraction;
-            return new String[]{"Surprised", Integer.toString(value), "N/A"};
+            return new String[]{"Surprised", Integer.toString(value), "N/A", "N/A"};
         }
 
         Map<Integer, PossibleFeedback> expectations = MapsUtils.getX(learnedInteractions, previousInteraction, HashMap::new);
         PossibleFeedback possibleFeedback = MapsUtils.getY(expectations, action, PossibleFeedback::new);
 
+        String prefix = "I" + previousInteraction.action + previousInteraction.reaction;
+        String representation = possibleFeedback.toString(expectedFeedback, actualFeedback);
+
         possibleFeedback.registerFeedback(actualFeedback);
 
+        previousInteraction = producedInteraction;
+
+        String type;
 
         if (expectedFeedback == actualFeedback) {
-            // Situation that the agent already knows
-            previousInteraction = producedInteraction;
-            return new String[]{"Happy", Integer.toString(value), ""};
+            type = "Happy";
         } else {
-            String type = "Learned";
-
-            // Learn new sequence
-            String learnedSequence = "[" + previousInteraction.toString() + ";" + producedInteraction.toString() + "]";
-
-            previousInteraction = producedInteraction;
-            return new String[]{type, Integer.toString(value), learnedSequence};
+            type = "Surprised";
         }
+
+        return new String[]{type, Integer.toString(value), prefix, representation};
     }
 
     class PossibleFeedback {
@@ -95,11 +95,15 @@ public class AgentTP4Rework extends Agent {
             weights[Math.min(feedback, NUMBER_OF_FEEDBACK) - 1]++;
         }
 
+        private int getProclivity(int feedback) {
+            return weights[feedback - 1] * valuationSystem.getValue(action, feedback);
+        }
+
         public int getProclivity() {
             int sum = 0;
 
             for (int feedback = 0 ; feedback != NUMBER_OF_FEEDBACK ; feedback++) {
-                sum = sum + weights[feedback] * valuationSystem.getValue(action, feedback + 1);
+                sum = sum + getProclivity(feedback + 1);
             }
 
             return sum;
@@ -115,6 +119,36 @@ public class AgentTP4Rework extends Agent {
             }
 
             return iMax + 1;
+        }
+
+        private String toStringFeedback(int feedback) {
+            String s = "" + weights[feedback - 1] + "x" + valuationSystem.getValue(action, feedback) + "=";
+            int value = getProclivity(feedback);
+            return "I" + action + "" + feedback  + " (" + s + value + ")";
+        }
+
+        public String toString(int expected, int actual) {
+            StringJoiner sj = new StringJoiner("  ");
+
+            for (int feedback = 0 ; feedback != NUMBER_OF_FEEDBACK ; feedback++) {
+                String s = toStringFeedback(feedback + 1);
+
+                if (actual == feedback + 1) {
+                    s = s + "<--";
+                } else {
+                    s = s + "   ";
+                }
+
+                if (expected == feedback + 1) {
+                    s = "<--" + s;
+                } else {
+                    s = "  " + s;
+                }
+
+                sj.add(s);
+            }
+
+            return sj.toString();
         }
     }
 }

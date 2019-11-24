@@ -13,6 +13,7 @@ public class Environnement4 implements Environnement {
     public int agir(int action) {
         if (numberOfActions == NUMBER_OF_ACTIONS_BEFORE_SWITCH) {
             simulatedEnvironment = new Environnement3();
+            System.out.println("| Environment change |");
         }
 
         numberOfActions++;
