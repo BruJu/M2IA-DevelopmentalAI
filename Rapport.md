@@ -1,16 +1,30 @@
 # Agent développemental
 
-**TODO : noms**
+*Etudiant 1* : Julian BRUYAT 11706770
+
+*Etudiant 2* : Jean-Philippe TISSERAND 11926733
 
 ## Introduction
 
-**TODO**
+Les agents développementaux sont des agents qui n'ont aucune connaissance à priori de l'environnement.
+Leur particularité est qu'ils apprennent de manière active : contrairement à un agent classique qui apprendrait
+en observant l'environnement puis en faisant une action, les agents développementaux se développent en faisant une
+action et en observant quelle réponse leur donne l'environnement.
+
+Ce TP a pour objectif de développer des agents développementaux simples évoluant dans des environnements simples sans
+en avoir de connaissance à priori.
 
 Nous avons développé les agents et les environnements en Java. Le code est disponible à l'adresse
 https://www.github.com/BruJu/aidev mais pour chaque agent, nous nous efforcerons de décrire l'algorithme
-que nous avons implémenté.
+que nous avons implémenté en utilisant un pseudo code Java donnant l'implémentation générale (qui ne gère pas
+les cas particuliers comme les valeurs null qui relèvent plus du détail d'implémentation).
 
 ## TP 1 : Agent dans un environnement donnant toujours la même réponse à une action donnée
+
+Le premier TP consiste à développer un agent qui apprend les réactions produites par son environnement.
+
+L'environnement est simple (il renvoie toujours la même réaction à une action donnée) : l'objectif de l'agent
+est d'apprendre toutes les interactions disponibles.
 
 ### Implémentation
 
@@ -66,7 +80,7 @@ L'environnement 1 est un environnement qui produit un feedback égal à l'action
 | 2 | 2 | 2 | Bored |
 | 1 | 1 | 1 | Happy | 
 
-Une fois que la  map a été initialisée pour l'action, l'agent n'a aucun problème pour prédire l'action obtenue et se
+Une fois que la map a été initialisée pour l'action, l'agent n'a aucun problème pour prédire l'action obtenue et se
 lasse vite.
 
 Nous avons également implémenté l'environnement qui renvoie 2 à l'action 1 et 1 à l'action 2. Nous ne mettons pas la
@@ -171,7 +185,7 @@ grande que 2 (dans son système de valeur).
 Nous décorons la map d'intéractions apprises (qui constitue les suffixes) par une autre map d'intéractions
 précédentes (qui liste les préfixes).
 
-Chaque intéraction préfixe possible donne ainsi à l'agent une liste d'intéractions suffixes attendues.
+Chaque interaction préfixe possible donne ainsi à l'agent une liste d'intéractions suffixes attendues.
 
 ```java
 class Agent {
@@ -252,7 +266,7 @@ suivante (comme préfixe) et pour pouvoir finir la séquence en cours (comme suf
 
 ```java
 class Agent {
-    Map<Pair<Action, Feedback>, Map<Action, Feedback>> sequencesApprises;
+    Map<Pair<Action, Feedback>, Map<Action, RapportAvecFeedback>> sequencesApprises;
     Pair<Action, Feedback> interactionPrecedente;
 
     Action produireAction() {
@@ -260,33 +274,45 @@ class Agent {
         return choisir_laction_dont_la_valeur_de_linteraction_est_la_plus_grande(interactionsAprises);
     }
     
-    Action choisir_laction_dont_la_valeur_de_linteraction_est_la_plus_grande(Map<Action, feedback> map) {
+    Action choisir_laction_dont_la_valeur_de_linteraction_est_la_plus_grande(Map<Action, RapportAvecFeedback> map) {
         Action actionChoisie = Aucune;
-        int feedbackActionChoisie = -Infini;
         
         for (Action action : actionPossibles) {
-            int feedback = map.getOrDefault(action, 0);
-            if (valeur(action, feedback) > valeur(actionChoisie, feedbackActionChoisie)) {
+            RapportAvecFeedback rapport = map.get(action);
+            if (valeur(action, rapport) > valeur(actionChoisie, rapport)) {
                 actionChoisie = action;
-                feedbackActionChoisie = feedback;
             }
         }
         
         return actionChoisie;
     }
     
+    int valeur(int action, RapportAvecFeedback rapport) {
+        int s = 0;
+        for (Feedback feedback : feedbackPossible) {
+            s = s + rapport.get(feedback).poids * valeurs.get(action, feedback);
+        }
+        return s;
+    }
+    
     String obtenirFeedback(Action action, Feedback feedbackObtenu) {
-        if (sequencesApprises.get(interactionPrecedente).get(action) == feedbackObtenu) {
-            interactionPrecedente = Pair(action, feedbackObtenu);
+        int feedbackMajoritaire = sequencesApprises.get(interactionPrecedente).get(action).getFeedbackMajoritaire();
+        
+        sequencesApprises.get(interactionPrecedente).get(action).register(feedbackObtenu);
+        interactionPrecedente = Pair(action, feedbackObtenu);
+        
+        if (obtenirFeedback == feedbackObtenu) {
             return "Content";
         } else {
-            sequencesApprises.get(interactionPrecedente).put(action, feedbackObtenu);
-            interactionPrecedente = Pair(action, feedbackObtenu);
-            return "A appris";
+            return "Surpris";
         }
     }
 }
 ```
+
+Les principales modifications sont :
+- Une action n'est plus évaluée selon le feedback auquel on s'attend mais l'ensemble des feedback déjà obtenus.
+- A chaque pas, on enregistre qu'on a vu la séquence intéraction précédente - intéraction actuelle.
 
 ### Vue globale
 
