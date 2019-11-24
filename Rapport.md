@@ -404,7 +404,7 @@ recommencer à explorer I22-I1x dont la valeur est égale à I22-I2x lors de l'�
 puis la dépasse après l'étape 36.
 
 Après l'étape 36, l'agent réussit à n'avoir que des interactions positives : il est
-suffisamment habitué au nouvel environnement et déleste ses anciennes habitudes.
+suffisamment habitué au nouvel environnement et déleste ses anciennes habitudes (les poids liés à l'ancien environnement sont moins élevés que ceux liés au nouvel).
 
 Le modèle de l'agent de ce TP converge cependant moins vite que celui du TP 3 sur ce
 même environnement. Néanmoins il pourrait s'adapter à des valences différentes de -1 et 1. En particulier,
