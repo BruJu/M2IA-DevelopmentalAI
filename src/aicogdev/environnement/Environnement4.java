@@ -1,5 +1,7 @@
 package aicogdev.environnement;
 
+import aicogdev.agent.Agent;
+
 /**
  * An environment that acts like the environment 3, then switch to the environment 1.
  */
@@ -13,7 +15,9 @@ public class Environnement4 implements Environnement {
     public int agir(int action) {
         if (numberOfActions == NUMBER_OF_ACTIONS_BEFORE_SWITCH) {
             simulatedEnvironment = new Environnement3();
-            System.out.println("| Environment change |");
+            if (Agent.PRODUCE_TRACE) {
+                System.out.println("| Environment change |");
+            }
         }
 
         numberOfActions++;

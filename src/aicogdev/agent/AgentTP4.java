@@ -7,21 +7,29 @@ import fr.bruju.util.MapsUtils;
 import java.util.*;
 
 /**
- * An agent that learns pairs of interactions.
- * It considers that for each (first action, first feedback, second action), there is an unique feedback
+ * An agent that learns the number of occurences of each seuenences of interaction to choose the best
+ * action using past experience and the previous interaction.
  */
 public class AgentTP4 extends Agent {
     /** Learned sequences of interactions */
     private Map<Interaction, Map<Integer, PossibleFeedback>> learnedInteractions = new HashMap<>();
 
     /** Valuation of interactions */
-    private ValuationSystem valuationSystem = new ValuationSystem(-1, 1, -1, 1);
+    private ValuationSystem valuationSystem;
 
     /** Previous interaction : used to compute the next one */
     private Interaction previousInteraction = null;
 
     /** Number of possibles actions */
     private static final int NUMBER_OF_ACTIONS = 2;
+
+    public AgentTP4() {
+        this("TP4-Values1");
+    }
+
+    public AgentTP4(String valueSystem) {
+        valuationSystem = new ValuationSystem(valueSystem);
+    }
 
     @Override
     protected Interaction getDecision() {

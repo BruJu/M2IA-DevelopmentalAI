@@ -1,7 +1,9 @@
 package aicogdev.agent;
 
 import aicogdev.interaction.Interaction;
+import fr.bruju.util.Pair;
 
+import java.util.Arrays;
 import java.util.StringJoiner;
 
 /**
@@ -9,6 +11,9 @@ import java.util.StringJoiner;
  */
 public abstract class Agent {
     // ==== Unified interface between every agents
+
+    /** If set to true, the system will produce a trace */
+    public static boolean PRODUCE_TRACE = true;
 
     /** Expected interaction (couple made action - expected feedback) */
 	private Interaction expectedInteraction;
@@ -26,19 +31,27 @@ public abstract class Agent {
      * Gives the feedback produced by the environement from the action that has been made
      * @param reaction The produced feedback
      */
-    public final void receiveFeedback(int reaction) {
-        String[] resultats = processReaction(expectedInteraction.action, expectedInteraction.reaction, reaction);
+    public final boolean receiveFeedback(int reaction) {
+        String[] results = processReaction(expectedInteraction.action, expectedInteraction.reaction, reaction);
 
         StringJoiner sj = new StringJoiner(" | ", "| ", " |");
         sj.add(Integer.toString(expectedInteraction.action));
         sj.add(Integer.toString(expectedInteraction.reaction));
         sj.add(Integer.toString(reaction));
 
-        for (String resultat : resultats) {
+        for (String resultat : results) {
             sj.add(resultat);
         }
 
-        System.out.println(sj.toString());
+        if (PRODUCE_TRACE)
+            System.out.println(sj.toString());
+
+        if (this instanceof AgentTP1 || results.length < 2) {
+            return true;
+        } else {
+            // Every agent has the value of the interaction as the 2nd string
+            return Integer.parseInt(results[1]) > 0;
+        }
     }
 
     // ==== Implementation of agents
