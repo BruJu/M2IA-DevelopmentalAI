@@ -59,46 +59,68 @@ public class AgentTP4 extends Agent {
             return new String[]{"Surprised", Integer.toString(value), "N/A", "N/A"};
         }
 
+        // Get intern representation of the current state
         Map<Integer, PossibleFeedback> expectations = MapsUtils.getX(learnedInteractions, previousInteraction, HashMap::new);
         PossibleFeedback possibleFeedback = MapsUtils.getY(expectations, action, PossibleFeedback::new);
 
-        String prefix = "I" + previousInteraction.action + previousInteraction.reaction;
-        String representation = possibleFeedback.toString(expectedFeedback, actualFeedback);
+        // Trace
+        String type = expectedFeedback == actualFeedback ? "Happy" : "Surprised";
+        String prefix = previousInteraction.toString();
+        String suffix = possibleFeedback.toString(expectedFeedback, actualFeedback);
 
+        // Update knowledge
         possibleFeedback.registerFeedback(actualFeedback);
-
         previousInteraction = producedInteraction;
 
-        String type;
-
-        if (expectedFeedback == actualFeedback) {
-            type = "Happy";
-        } else {
-            type = "Surprised";
-        }
-
-        return new String[]{type, Integer.toString(value), prefix, representation};
+        return new String[]{type, Integer.toString(value), prefix, suffix};
     }
 
+    // ========================
+    // POSSIBILITIES MANAGEMENT
+
+    /**
+     * This class encapsultes the information concerning the possible feedback for a given triple
+     * (First Interaction, First Feedback, Second Interaction).
+     */
     class PossibleFeedback {
+        /** Total number of possible feedback */
         private static final int NUMBER_OF_FEEDBACK = 2;
 
-        int[] weights = new int[NUMBER_OF_FEEDBACK];
-
+        /** ID of the second action (to be able to evaluate the interactions) */
         private final int action;
 
-        PossibleFeedback(int action) {
+        /** Number of time each feedback occurend */
+        int[] weights = new int[NUMBER_OF_FEEDBACK];
+
+        /**
+         * Creates a possible feedback manager
+         * @param action The action that produces the described feeback
+         */
+        private PossibleFeedback(int action) {
             this.action = action;
         }
 
+        /**
+         * Add 1 to the weight of the feedback
+         * @param feedback The feedback
+         */
         public void registerFeedback(int feedback) {
             weights[Math.min(feedback, NUMBER_OF_FEEDBACK) - 1]++;
         }
 
+        /**
+         * Returns the value of the interaction number feedback
+         * @param feedback The feedback
+         * @return The value (weight * preference)
+         */
         private int getProclivity(int feedback) {
             return weights[feedback - 1] * valuationSystem.getValue(action, feedback);
         }
 
+        /**
+         * Returns the total value of every interaction that this action can produce
+         * @return The total value
+         */
         public int getProclivity() {
             int sum = 0;
 
@@ -109,24 +131,27 @@ public class AgentTP4 extends Agent {
             return sum;
         }
 
+        /**
+         * Returns the number of the expected feedback (the one that occurs the most)
+         * @return The number of the expected feedback
+         */
         public int getExpectedFeedback() {
-            int iMax = 0;
-
-            for (int i = 1; i < weights.length; i++) {
-                if (weights[i] > weights[iMax]) {
-                    iMax = i;
-                }
-            }
-
-            return iMax + 1;
+            return ListSearch.searchMaxValue(weights.length, i -> weights[i]) + 1;
         }
 
+        /**
+         * Stringify the information for a given interactin this action x the given feedback
+         */
         private String toStringFeedback(int feedback) {
             String s = "" + weights[feedback - 1] + "x" + valuationSystem.getValue(action, feedback) + "=";
             int value = getProclivity(feedback);
             return "I" + action + "" + feedback  + " (" + s + value + ")";
         }
 
+        /**
+         * Stringify the situation of this representation considering that the agent expected a
+         * feedback and got the actual feedback.
+         */
         public String toString(int expected, int actual) {
             StringJoiner sj = new StringJoiner("  ");
 
