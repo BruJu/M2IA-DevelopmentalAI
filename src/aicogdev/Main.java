@@ -12,8 +12,8 @@ import java.util.function.Supplier;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
-        // tracedExecution(new AgentTP4(), new Environnement4());
-        checkPerformance();
+        tracedExecution(new AgentTP4("TP4-Values3"), new Environnement4());
+        //checkPerformance();
     }
 
     private static void checkPerformance() {
@@ -103,9 +103,9 @@ public class Main {
     }
 
     private static void tracedExecution(Agent agent, Environnement environnement)  throws InterruptedException {
-        while (true) {
+        for (int i = 0 ; i != 40 ; i++) {
             produceAStep(agent, environnement);
-            Thread.sleep(500);
+            //Thread.sleep(500);
         }
     }
 }

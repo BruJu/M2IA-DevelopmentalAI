@@ -14,9 +14,14 @@ public abstract class Agent {
 
     /** If set to true, the system will produce a trace */
     public static boolean PRODUCE_TRACE = true;
+    /** If set to true, the trace will bold the next step number */
+    public static boolean BOLD_NEXT_STEP = false;
 
     /** Expected interaction (couple made action - expected feedback) */
 	private Interaction expectedInteraction;
+
+	/** Step (for tracing) */
+	private int step = 0;
 
     /**
      * Returns the number of the next action to do
@@ -35,6 +40,13 @@ public abstract class Agent {
         String[] results = processReaction(expectedInteraction.action, expectedInteraction.reaction, reaction);
 
         StringJoiner sj = new StringJoiner(" | ", "| ", " |");
+        String stepRepresentation = "#" + Integer.toString(++step);
+        if (BOLD_NEXT_STEP) {
+            BOLD_NEXT_STEP = false;
+            stepRepresentation = "**" + stepRepresentation + "**";
+        }
+        sj.add(stepRepresentation);
+
         sj.add(Integer.toString(expectedInteraction.action));
         sj.add(Integer.toString(expectedInteraction.reaction));
         sj.add(Integer.toString(reaction));

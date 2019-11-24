@@ -64,7 +64,7 @@ public class AgentTP4 extends Agent {
         if (previousInteraction == null) {
             // No previous interaction : can't learn sequence
             previousInteraction = producedInteraction;
-            return new String[]{"Surprised", Integer.toString(value), "N/A", "N/A"};
+            return new String[]{"Surprised", Integer.toString(value), "N/A", "N/A", "N/A"};
         }
 
         // Get intern representation of the current state
@@ -74,13 +74,27 @@ public class AgentTP4 extends Agent {
         // Trace
         String type = expectedFeedback == actualFeedback ? "Happy" : "Surprised";
         String prefix = previousInteraction.toString();
-        String suffix = possibleFeedback.toString(expectedFeedback, actualFeedback);
+        String[] suffixes = new String[NUMBER_OF_ACTIONS];
+        for (int idaction = 0 ; idaction != NUMBER_OF_ACTIONS ; idaction++) {
+            int internFeedback = (idaction + 1 == action) ? actualFeedback : -1;
+            if (expectedFeedback == actualFeedback)
+                internFeedback = -1;
+
+            suffixes[idaction] = MapsUtils.getY(expectations, idaction + 1, PossibleFeedback::new).toString(internFeedback);
+        }
 
         // Update knowledge
         possibleFeedback.registerFeedback(actualFeedback);
         previousInteraction = producedInteraction;
 
-        return new String[]{type, Integer.toString(value), prefix, suffix};
+        String[] displayArray = new String[3 + suffixes.length];
+        displayArray[0] = type;
+        displayArray[1] = Integer.toString(value);
+        displayArray[2] = prefix;
+        for (int i = 0; i < suffixes.length; i++) {
+            displayArray[i + 3] = suffixes[i];
+        }
+        return displayArray;
     }
 
     // ========================
@@ -147,41 +161,26 @@ public class AgentTP4 extends Agent {
             return ListSearch.searchMaxValue(weights.length, i -> weights[i]) + 1;
         }
 
-        /**
-         * Stringify the information for a given interactin this action x the given feedback
-         */
-        private String toStringFeedback(int feedback) {
-            String s = "" + weights[feedback - 1] + "x" + valuationSystem.getValue(action, feedback) + "=";
-            int value = getProclivity(feedback);
-            return "I" + action + "" + feedback  + " (" + s + value + ")";
-        }
-
-        /**
-         * Stringify the situation of this representation considering that the agent expected a
-         * feedback and got the actual feedback.
-         */
-        public String toString(int expected, int actual) {
-            StringJoiner sj = new StringJoiner("  ");
+        public String toString(int highlight) {
+            String calc = "";
 
             for (int feedback = 0 ; feedback != NUMBER_OF_FEEDBACK ; feedback++) {
-                String s = toStringFeedback(feedback + 1);
+                int proclivity = getProclivity(feedback + 1);
 
-                if (actual == feedback + 1) {
-                    s = s + "<--";
-                } else {
-                    s = s + "   ";
+                if (proclivity >= 0 && !calc.equals("")) {
+                    calc += "+";
+                } else if (proclivity < 0) {
+                    calc += "-";
                 }
 
-                if (expected == feedback + 1) {
-                    s = "<--" + s;
-                } else {
-                    s = "  " + s;
-                }
+                String symbol = highlight == feedback + 1 ? "**" : "";
 
-                sj.add(s);
+                calc = calc + symbol + Math.abs(proclivity) + symbol;
             }
 
-            return sj.toString();
+            int proclivity = getProclivity();
+
+            return calc + "=" + proclivity;
         }
     }
 }

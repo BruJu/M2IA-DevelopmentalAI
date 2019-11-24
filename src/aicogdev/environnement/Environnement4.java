@@ -15,9 +15,7 @@ public class Environnement4 implements Environnement {
     public int agir(int action) {
         if (numberOfActions == NUMBER_OF_ACTIONS_BEFORE_SWITCH) {
             simulatedEnvironment = new Environnement3();
-            if (Agent.PRODUCE_TRACE) {
-                System.out.println("| Environment change |");
-            }
+            Agent.BOLD_NEXT_STEP = true;
         }
 
         numberOfActions++;
