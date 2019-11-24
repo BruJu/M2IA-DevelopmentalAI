@@ -408,6 +408,8 @@ Nous allons étudier la trace pour un agent qui attend le feedback 2.
 | #39 | 2 | 2 | 2 | Happy | 1 | I12 | -1+0=-1 | 0+8=8 |
 | #40 | 1 | 2 | 2 | Happy | 1 | I22 | -1+3=2 | -7+6=-1 |
 
+Note : L'environnement change entre l'étape 10 et l'étape 11.
+
 Nous représentons dans les colonnes "évaluation action" l'arbitrage qu'a fait l'agent
 avant d'effectuer l'action. Lorsqu'il se trompe de feedback qu'il reçoit (il attendait
 le feedback 1 mais il a obtenu le 2), nous représentons en gras le numéro correspondant à ce
