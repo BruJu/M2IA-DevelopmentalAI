@@ -18,7 +18,7 @@ Nous avons développé les agents et les environnements en Java. Le code est dis
 
 Le premier TP consiste à développer un agent qui apprend les réactions produites par un environnement simple.
 
-L'environnement est simple dans le sens où il renvoie toujours la même réaction à une action donnée). L'objectif de l'agent est d'apprendre toutes les interactions disponibles.
+L'environnement est simple dans le sens où il renvoie toujours la même réaction à une action donnée. L'objectif de l'agent est d'apprendre toutes les interactions disponibles dans cet environnement.
 
 ### Implémentation
 
@@ -77,7 +77,7 @@ L'environnement 1 est un environnement qui produit un feedback égal à l'action
 Une fois que la map a été initialisée pour l'action, l'agent n'a aucun problème pour prédire l'action obtenue et se
 lasse vite.
 
-Nous avons également implémenté l'environnement qui renvoie 2 à l'action 1 et 1 à l'action 2. Nous ne mettons pas la trace car elle est similaire à la précédente : après la première fois que l'agent fait une action donnée, il prédit à chaque fois correctement le feedback provenant de cette action se lasse rapidement.
+Nous avons également implémenté l'environnement qui renvoie 2 à l'action 1 et 1 à l'action 2. Nous ne mettons pas la trace car elle est similaire à la précédente : après la première fois que l'agent fait une action donnée, il prédit à chaque fois correctement le feedback provenant de cette action et se lasse rapidement.
 
 Nous remarquons que lors de la phase d'apprentissage, l'agent effectue 4 fois de suite la même action (une fois pour apprendre, la réponse le surprend, puis 3 fois où il obtient la réponse attendue). Lorsqu'il revient à une action, il n'effectue plus que 3 fois l'action.
 
@@ -88,7 +88,7 @@ Sur un agent plus évolué, on pourrait imaginer implémenter volontairement ce 
 ### Implémentation
 
 Le fonctionnement de l'agent est identique au premier, excepté pour la fonction de changement d'action.
-Si dans le TP1, la fonction de changement d'action est trivial (renvoie 1 si l'action faite était la 2, renvoie 2 si l'action faite était la 1), ici nous avons deux phases dans la fonction de changement d'état : une phase d'exploration et une phase d'exploitation.
+Si dans le TP1, la fonction de changement d'action est triviale (renvoie 1 si l'action faite était la 2, renvoie 2 si l'action faite était la 1), ici nous avons deux phases dans la fonction de changement d'état : une phase d'exploration et une phase d'exploitation.
 
 ```java
 class Agent {
@@ -109,7 +109,7 @@ class Agent {
         
         // Exploitation
         // On cherche la meilleure action possible qui est différente de celle
-        // dont on vinet de se lasser
+        // dont on vient de se lasser
         meilleure_action_possible = Aucune;
         for (Action action : actionPossibles) {
             if (action != actionActuelle) {
@@ -157,8 +157,8 @@ Nous considérons que la valeur d'une action est égale à la valeur de la paire
 Par abus, nous avons gardé le fait qu'un agent est content même si la valeur qu'il donne à l'interaction est négative : il est "content" d'avoir prédit correctement l'interaction.
 
 Lors de la phase d'exploration, l'agent explore toutes les actions.
-Lors de la phase d'exploitation, il n'effectue pas l'action 2. Il préfère alterner entre 1 et 3 qui ont une valeur plus
-grande que 2 (dans son système de valeur).
+Lors de la phase d'exploitation, il n'effectue pas l'action 2. Il préfère alterner entre l'action 1 et 3 qui ont une valeur plus
+grande que la 2 (dans son système de valeur).
 
 
 ## TP 3 : Environnement dont la réponse change selon l'action précédente
@@ -208,7 +208,7 @@ class Agent {
 }
 ```
 
-Si pour une interaction précédente et une action, nous n'avons pas de feedback, alors nous considérons que
+Si pour un couple "interaction précédente + action", nous n'avons pas de feedback, alors nous considérons que
 la valeur de l'interaction est 0 (neutre) pour la favoriser par rapport à une interaction qui serait défavorable.
 
 Cette approche prudente ne permet néanmoins pas d'explorer toutes les possibilités : si la séquence AaFbAc produit un feedback Fd et que AcFd a pour valeur 1, si on l'explore avant AaFbAeFg et que AeFg a pour valeur 2, alors AeFg ne sera jamais exploré alors qu'elle est plus favorable.
@@ -240,6 +240,8 @@ séquences (il n'apprend rien au pas 1), tandis que les autres sont utilisés à
 suivante (comme préfixe) et pour pouvoir finir la séquence en cours (comme suffixe).
 
 ## TP 4 : Apprentissage d'environnements pouvant changer
+
+Le but de ce TP est de voir si nous arrivons maintenant à générer des comportement intelligents avec nos agents dans des environements différents. 
 
 ### Implémentation
 
@@ -336,7 +338,7 @@ de la part de l'environnement. Dans les environnements 1, 2 et 3 de cette expér
 ferait l'agent du TP3 (on voit que à part lors de la phase d'initialisation, il a 100% de réussite).
 
 - Dans tous les cas sur le long terme, tous nos agents finissent par savoir comment exploiter l'environnement pour avoir
-des interactions qu'il aime.
+des interactions qu'ils aiment.
 
 ### Étude d'un agent cherchant le feedback 2 dans un environnement changeant
 
@@ -402,10 +404,9 @@ recommencer à explorer I22-I1x dont la valeur est égale à I22-I2x lors de l'�
 puis la dépasse après l'étape 36.
 
 Après l'étape 36, l'agent réussit à n'avoir que des interactions positives : il est
-suffisamment habitué au nouvel environnement et les poids de l'ancien n'ont plus d'influence
-néfaste sur ce qu'il avait appris.
+suffisamment habitué au nouvel environnement et déleste ses anciennes habitudes.
 
-Le modèle de l'agent de ce TP arrive néanmoins moins vite à convergence que celui du TP 3 sur ce
+Le modèle de l'agent de ce TP converge cependant moins vite que celui du TP 3 sur ce
 même environnement. Néanmoins il pourrait s'adapter à des valences différentes de -1 et 1. En particulier,
 dans un environnement qui renverrait le feedback 1 une fois sur 10 et le feedback 2 sinon, si
 l'agent porte une valeur de 50 au feedback 1 et -1 au feedback 2, ce modèle peut potentiellement
@@ -415,13 +416,13 @@ peut gagner beaucoup, alors que l'agent du TP 3 restera sur l'idée que cette in
 ## Conclusion 
 
 Ce TP nous a montré que sans connaissance des environnements, on peut construire des agents
-qui s'adaptent à ces environnements. Les agents des TP 3 et 4 en particulier le montrent en
+qui s'adaptent à des environnements divers. Les agents des TP 3 et 4 en particulier le montrent en
 utilisant une représentation interne totalement différente de la réalité des environnements
 dans lesquels ils évoluent : une représentation sous forme de chaine de deux interactions
 fréquentes, alors que les environnements peuvent répondre à des règles légèrement plus complexes,
 comme simuler un autre environnement.  
 
-De plus, nous humains, pouvons à partir d'une implémentation déterministe et concrète déduire
+De plus, nous pouvons à partir d'une implémentation déterministe et concrète déduire
 du comportement de l'agent des comportements plus abstraits, comme voir le comportement de l'agent
 du TP 4 avec le second système de valeur comme étant un agent ayant une forme de curiosité mineure,
-alors que nous n'avons pas implémenté consciemment ce phénomène.
+alors que nous n'avons pas chercher une seule seconde à implémenter ce comportement dans l'agent. Les comportements émergent des agents et de leurs interactions avec l'environnement.
