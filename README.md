@@ -18,30 +18,7 @@ connaître la sémantique de ces actions, il est possible d'imaginer que l'agent
 puisse "apprendre" qu'utiliser ses capteurs est mieux avant d'essayer d'avancer.
 (L'agent va en réalité apprendre des séquences d'interactions qui lui plaisent).   
 
-## Notes
-
-
-
-    a1  a2  a3
-f1   1   1  -1
-f2   1  -1   1
-
-a1 f1
-a2 f2
-a3 f2
-
-
-
-
-Rapport
-
-Avec traces
-et explications sur l'observation
-expliquer comment on a codé
-
-
-Un chapitre par tp (par séance)
-
+[Le rapport rendu (dans sa version quasi finale) peut être trouvé ici.](Rapport.md)
 
 
 ## Licence
